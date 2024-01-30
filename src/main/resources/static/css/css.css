@@ -1,0 +1,48 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #ffe0bf;
+}
+
+#login-container {
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+form {
+    margin: 0 0 20px 0;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"]{
+    width: 60%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+input[type="submit"] {
+    width: 60%;
+    height: 40px;
+    background-color: #000;
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+}
+
+.error {
+    color: red;
+}
+
+.center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    align-content: center;
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+</head>
+<body>
+
+<h1>Felhasználó módosítása</h1>
+
+<form action="#"
+      th:action="@{/demo/update/{id}(id=${user.id})}"
+      th:object="${user}"
+      method="post">
+    <label for="username">Name</label>
+    <input type="text" th:field="*{username}" id="username" placeholder="Username">
+    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+    <label for="email">Email</label>
+    <input type="text" th:field="*{email}" id="email" placeholder="Email">
+    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+    <input type="submit" value="Módosít">
+</form>
+
+</body>
+</html>
