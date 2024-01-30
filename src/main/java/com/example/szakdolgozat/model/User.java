@@ -2,7 +2,7 @@ package com.example.szakdolgozat.model;
 
 import jakarta.persistence.*;
 
-@Entity // This tells Hibernate to make a table out of this class
+@Entity
 @Table(name = "users")
 public class User {
     @Id
