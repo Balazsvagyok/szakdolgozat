@@ -46,3 +46,35 @@ input[type="submit"] {
     margin-right: auto;
     align-content: center;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ddd;
+    padding: 10px;
+}
+
+.header h1 {
+    margin: 0;
+}
+
+.header ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.header ul li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.header ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.header ul li a:hover {
+    color: white;
+}
