@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .formLogin(login ->
                         login.usernameParameter("username")
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/demo/users")
+                                .defaultSuccessUrl("/")
                                 .permitAll()
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()

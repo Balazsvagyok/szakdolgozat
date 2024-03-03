@@ -3,6 +3,7 @@ package com.example.szakdolgozat.controller;
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

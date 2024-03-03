@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="">
 <head>
   <link rel="stylesheet" href="/css/css.css" type="text/css">
   <meta charset="UTF-8">
@@ -9,9 +9,14 @@
 <div class="header">
   <h1>Education</h1>
   <ul>
-    <li><a th:href="@{/demo/users}">Felhasználók</a></li>
-    <li><a th:href="@{/demo/registration}">Regisztráció</a></li>
-    <li><a th:href="@{/login}">Bejelentkezés</a></li>
+    <li><a sec:authorize="isAuthenticated()" th:href="@{/demo/users}">Felhasználók</a></li>
+    <li><a sec:authorize="!isAuthenticated()" th:href="@{/demo/registration}">Regisztráció</a></li>
+    <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}">Bejelentkezés</a></li>
+    <li>
+      <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="logout">
+        <input type="submit" value="Kijelentkezés"/>
+      </form>
+    </li>
   </ul>
 </div>
 
