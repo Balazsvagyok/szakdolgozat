@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="">
 <head>
-  <link rel="stylesheet" href="/css/css.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/index_css.css" type="text/css">
   <meta charset="UTF-8">
   <title>Fooldal</title>
 </head>
@@ -10,11 +10,12 @@
   <h1>Education</h1>
   <ul>
     <li><a sec:authorize="isAuthenticated()" th:href="@{/demo/users}">Felhasználók</a></li>
-    <li><a sec:authorize="!isAuthenticated()" th:href="@{/demo/registration}">Regisztráció</a></li>
-    <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}">Bejelentkezés</a></li>
+    <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a></li>
+    <li><a sec:authorize="!isAuthenticated()" th:href="@{/demo/registration}" id="regisztracio">Regisztráció</a></li>
     <li>
-      <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="logout">
-        <input type="submit" value="Kijelentkezés"/>
+      <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem">Kijelentkezés</a>
+      <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+        <input hidden type="submit" value="Kijelentkezés"/>
       </form>
     </li>
   </ul>
