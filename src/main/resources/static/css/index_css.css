@@ -1,5 +1,5 @@
 body {
-    background-image: url("../pictures/index_background2.jpg");
+    background-image: url("/static/pictures/index_background2.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
@@ -7,6 +7,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 .error {
@@ -33,6 +34,7 @@ body {
 
 .header h1 {
     margin: 0 5vh;
+    font-family: Arial;
 }
 
 .header ul {
@@ -86,8 +88,62 @@ body {
 .header ul li a {
     text-decoration: none;
     color: #333;
+    font-family: Arial;
 }
 
 .header ul li a:hover {
     color: white;
+}
+
+.flex_container {
+    display: flex;
+}
+
+.flex_child {
+    flex: 1;
+}
+
+.flex_child:first-child {
+    margin-right: 20px;
+}
+
+#hero_text {
+    font-size: 100px;
+    font-family: Arial;
+    color: white;
+    text-shadow: 4px 4px black;
+    margin: 20vh;
+    width: 30%;
+    display: flex;
+    justify-content: left;
+    text-align: left;
+}
+
+#hero_div_block {
+    display: table;
+    opacity: 80%;
+    height: 30px;
+    margin: auto 30px;
+}
+
+#tananyagok {
+    font-family: Arial;
+    font-size: 40px;
+    text-decoration: none;
+    display: table-cell;
+    background-color: #ddd;
+    border-radius: 20px;
+    color: darkslategray;
+    vertical-align: middle;
+    padding: 20px;
+    transition-timing-function: ease-in-out;
+    transition: 0.2s;
+}
+
+#tananyagok:hover {
+    background-color: gray;
+    color: white;
+    opacity: 100%;
+    transition-timing-function: ease-in-out;
+    transition: 0.2s;
 }
