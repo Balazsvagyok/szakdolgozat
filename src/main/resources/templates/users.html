@@ -30,8 +30,8 @@
         <td th:text="${user.getUsername()}">Név</td>
         <td th:text="${user.getEmail()}">Email</td>
         <td th:text="${user.getRole()}">Role</td>
-        <td><a th:href="@{/demo/edit/{id}(id=${user.id})}">Módosítás</a></td>
-        <td><a th:href="@{/demo/delete/{id}(id=${user.id})}">Törlés</a></td>
+        <td><a th:href="@{/edit/{id}(id=${user.id})}">Módosítás</a></td>
+        <td><a th:href="@{/delete/{id}(id=${user.id})}">Törlés</a></td>
         <!--
         <td th:if="${user.getUsername() == #authentication.getName()}">
             <a th:href="@{/demo/edit/{id}(id=${user.id})}">Módosítás</a>

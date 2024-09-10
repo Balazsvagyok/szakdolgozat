@@ -3,7 +3,8 @@ package com.example.szakdolgozat.controller;
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,27 +12,53 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping(path="/demo")
+@RequestMapping
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("")
-    public String viewHomePage() {
+    @GetMapping
+    public String homePage(Model model) {
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        String name = loggedInUser.getName();
+
+        User user = userRepository.findByUsername(name);
+        if (user != null) {
+            String role = user.getRole();
+            System.out.println(role);
+            model.addAttribute("role", role);
+        }
         return "index";
     }
 
-    @GetMapping(path="/all")
+//    @GetMapping("")
+//    public String viewHomePage() {
+////        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+////        String name = auth.getName();
+////
+////        User user = userRepository.findByUsername(name);
+////        String role = user.getRole();
+////        System.out.println(role);
+//
+//        return "index";
+//    }
+
+    @GetMapping(path = "/all")
     public @ResponseBody Iterable<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping("/users")
     public String showAllUsers(Model model) {
-        Iterable<User> userList = userRepository.findAll();
-        model.addAttribute("users", userList);
-        return "users";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+            Iterable<User> userList = userRepository.findAll();
+            model.addAttribute("users", userList);
+            return "users";
+        } else {
+            return "redirect: ";
+        }
     }
 
     @GetMapping("/registration")
@@ -41,7 +68,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String saveUser(@ModelAttribute("user") User user){
+    public String saveUser(@ModelAttribute("user") User user) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         try {
             String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
@@ -50,7 +77,7 @@ public class UserController {
             userRepository.save(user);
             return "redirect:/login";
         } catch (Exception ex) {
-            return "redirect:/demo/registration?error=username_already_exists";
+            return "redirect:/registration?error=username_already_exists";
         }
     }
 
@@ -74,7 +101,7 @@ public class UserController {
         user.setRole(existingUser.getRole());
 
         userRepository.save(user);
-        return "redirect:/demo/users";
+        return "redirect:/users";
     }
 
     @GetMapping("/delete/{id}")
@@ -82,7 +109,7 @@ public class UserController {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         userRepository.delete(user);
-        return "redirect:/demo/users";
+        return "redirect:/users";
     }
 
 }

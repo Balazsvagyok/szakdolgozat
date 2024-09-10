@@ -14,13 +14,15 @@
 </style>
 <div class="header">
     <h1>Education</h1>
-    <ul>
-        <li><a sec:authorize="isAuthenticated()" th:href="@{/demo/users}">Felhasználók</a></li>
+    <ul th:switch="${role}">
+        <li><a th:case="'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}"
+               id="felhasznalok">Felhasználók</a></li>
         <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a></li>
-        <li><a sec:authorize="!isAuthenticated()" th:href="@{/demo/registration}" id="regisztracio">Regisztráció</a>
+        <li><a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
         </li>
         <li>
-            <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem">Kijelentkezés</a>
+            <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem"
+               id="kijelentkezes">Kijelentkezés</a>
             <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
                 <input hidden type="submit" value="Kijelentkezés"/>
             </form>
@@ -31,13 +33,13 @@
 <div class="flex_container">
     <div class="flex_child">
         <h1 id="hero_text">
-            Tanulj </br>
-            Bárhol, </br>
+            Tanulj <br>
+            Bárhol, <br>
             Bármikor
         </h1>
     </div>
     <div id="hero_div_block" class="flex_child">
-        <a th:href="@{/demo/users}" id="tananyagok">Tananyagok</a>
+        <a th:href="@{/users}" id="tananyagok">Tananyagok</a>
     </div>
 </div>
 

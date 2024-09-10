@@ -13,7 +13,7 @@
   A felhasználónév már létezik.
 </div>
 
-<form action="#" th:action="@{/demo/save}" th:object="${user}" method="post" id="login-container">
+<form action="#" th:action="@{/save}" th:object="${user}" method="post" id="login-container">
   <label for="username">Felhasználónév:</label> <br>
   <input type="text" id="username" th:field="*{username}" required/> <br>
 

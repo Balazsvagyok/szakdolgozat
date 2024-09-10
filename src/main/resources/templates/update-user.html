@@ -10,7 +10,7 @@
 <h1>Felhasználó módosítása</h1>
 
 <form action="#"
-      th:action="@{/demo/update/{id}(id=${user.id})}"
+      th:action="@{/update/{id}(id=${user.id})}"
       th:object="${user}"
       method="post">
     <label for="username">Name</label>

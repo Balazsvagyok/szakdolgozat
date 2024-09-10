@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="/static/css/login_css.css" type="text/css">
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/login_css.css" type="text/css">
 </head>
+
 <body>
 <div th:if="${param.error}" class="error">
-  Sikertelen bejelentkezés.
+    Sikertelen bejelentkezés.
 </div>
+
 <form th:action="@{/login}" method="post" id="login-container">
-  <div><label> Felhasználónév: <br><input type="text" name="username"/> </label></div>
-  <div><label> Jelszó: <br><input type="password" name="password"/> </label></div>
-  <div><input type="submit" value="Bejelentkezés"/></div>
+    <div><label> Felhasználónév: <br><input type="text" name="username"/> </label></div>
+    <div><label> Jelszó: <br><input type="password" name="password"/> </label></div>
+    <div><input type="submit" value="Bejelentkezés"/></div>
 </form>
-<h3 class="center"><a th:href="@{/demo/registration}">Regisztráció</a></h3>
+
+<h3 class="center"><a th:href="@{/registration}">Regisztráció</a></h3>
 </body>
 </html>
