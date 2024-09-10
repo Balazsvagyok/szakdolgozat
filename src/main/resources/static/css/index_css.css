@@ -1,5 +1,5 @@
 body {
-    background-image: url("/static/pictures/index_background2.jpg");
+    background-image: url("../pictures/background.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
@@ -147,7 +147,7 @@ body {
 #hero_text {
     font-size: 100px;
     font-family: Arial, serif;
-    color: white;
+    color: #c4c4c4;
     text-shadow: 4px 4px black;
     margin: 20vh;
     width: 30%;
@@ -168,7 +168,7 @@ body {
     font-size: 40px;
     text-decoration: none;
     display: table-cell;
-    background-color: #ddd;
+    background-color: lightblue;
     border-radius: 20px;
     color: darkslategray;
     vertical-align: middle;

@@ -1,9 +1,12 @@
 body {
+    background-image: url("../pictures/background.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #ffe0bf;
 }
 
 #login-container {
@@ -11,11 +14,11 @@ body {
     box-sizing: content-box;
     align-items: center;
     text-align: center;
-    margin: 0 auto;
+    margin: 50px auto;
 }
 
 form {
-    margin: 0 0 20px 0;
+    margin: 0 0 10px 0;
 }
 
 input[type="text"],
@@ -47,4 +50,8 @@ input[type="submit"] {
     margin-left: auto;
     margin-right: auto;
     align-content: center;
+}
+
+.ctrl_btn, .ctrl_btn:visited, .ctrl_btn:active {
+    text-decoration: none;
 }

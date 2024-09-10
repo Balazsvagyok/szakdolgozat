@@ -11,12 +11,16 @@
     Sikertelen bejelentkezés.
 </div>
 
+<h1 class="center">Bejelentkezés</h1>
+
 <form th:action="@{/login}" method="post" id="login-container">
     <div><label> Felhasználónév: <br><input type="text" name="username"/> </label></div>
     <div><label> Jelszó: <br><input type="password" name="password"/> </label></div>
     <div><input type="submit" value="Bejelentkezés"/></div>
 </form>
 
-<h3 class="center"><a th:href="@{/registration}">Regisztráció</a></h3>
+<h3 class="center ctrl_btn"><a th:href="@{/registration}">Regisztráció</a></h3>
+<h3 class="center ctrl_btn"><a th:href="@{/}">Vissza</a></h3>
+
 </body>
 </html>
