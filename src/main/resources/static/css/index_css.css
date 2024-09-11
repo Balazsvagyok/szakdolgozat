@@ -1,3 +1,7 @@
+html {
+    height: 100%;
+}
+
 body {
     background-image: url("../pictures/background.jpg");
     background-repeat: no-repeat;
@@ -16,8 +20,7 @@ body {
 
 .center {
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
     align-content: center;
 }
 
@@ -111,6 +114,24 @@ body {
 
 #kijelentkezes:hover {
     opacity: 80%;
+    transition-timing-function: ease-in-out;
+    transition: 0.2s;
+}
+
+#profile {
+    display: inline-block;
+    justify-content: center;
+    padding: 10px 35px;
+    border-radius: 20px;
+    transition-timing-function: ease-in-out;
+    transition: 0.2s;
+}
+
+#profile:hover {
+    padding: 10px 35px;
+    background-color: white;
+    color: black;
+    border-radius: 20px;
     transition-timing-function: ease-in-out;
     transition: 0.2s;
 }

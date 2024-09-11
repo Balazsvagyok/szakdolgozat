@@ -44,10 +44,10 @@ public class UserController {
 //        return "index";
 //    }
 
-    @GetMapping(path = "/all")
-    public @ResponseBody Iterable<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+//    @GetMapping(path = "/all")
+//    public @ResponseBody Iterable<User> getAllUsers() {
+//        return userRepository.findAll();
+//    }
 
     @GetMapping("/users")
     public String showAllUsers(Model model) {
@@ -59,6 +59,28 @@ public class UserController {
         } else {
             return "redirect: ";
         }
+    }
+
+    @GetMapping("/profile")
+    public String userProfile(Model model) {
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        String name = loggedInUser.getName();
+
+        User user = userRepository.findByUsername(name);
+        if (user != null) {
+            String username = user.getUsername();
+            String email = user.getEmail();
+            String role = user.getRole();
+            int id = user.getId();
+            model.addAttribute("username", username);
+            model.addAttribute("email", email);
+            model.addAttribute("role", role);
+            model.addAttribute("id", id);
+
+            return "profile";
+        }
+
+        return "redirect: ";
     }
 
     @GetMapping("/registration")

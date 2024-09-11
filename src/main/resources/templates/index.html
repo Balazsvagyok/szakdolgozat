@@ -11,11 +11,12 @@
 <div class="header">
     <h1>Education</h1>
     <ul th:switch="${role}">
-        <li><a th:case="'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}"
-               id="felhasznalok">Felhasználók</a></li>
         <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a></li>
         <li><a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
         </li>
+        <li><a sec:authorize="isAuthenticated()" th:href="@{/profile}" id="profile">Profilom</a></li>
+        <li><a th:case="'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}"
+               id="felhasznalok">Felhasználók</a></li>
         <li>
             <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem"
                id="kijelentkezes">Kijelentkezés</a>

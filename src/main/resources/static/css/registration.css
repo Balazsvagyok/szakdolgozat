@@ -39,6 +39,12 @@ input[type="submit"] {
     font-size: 18px;
 }
 
+#users_tbl {
+    background-color: white;
+    padding: 5vh;
+    border-radius: 1vh;
+}
+
 .error {
     color: red;
 }
