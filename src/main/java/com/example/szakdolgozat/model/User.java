@@ -13,6 +13,16 @@ public class User {
     private String email;
     private String role;
 
+    private String newPassword;
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -26,7 +26,7 @@ public class UserController {
         User user = userRepository.findByUsername(name);
         if (user != null) {
             String role = user.getRole();
-            System.out.println(role);
+//          System.out.println(role);
             model.addAttribute("role", role);
         }
         return "index";
@@ -113,7 +113,7 @@ public class UserController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") int id, User user, BindingResult result, Model model) {
+    public String updateUser(@PathVariable("id") int id, User user, BindingResult result) {
         if (result.hasErrors()) {
             user.setId(id);
             return "update-user";
@@ -121,9 +121,36 @@ public class UserController {
         User existingUser = userRepository.findById(id).get();
         user.setPassword(existingUser.getPassword());
         user.setRole(existingUser.getRole());
+        user.setNewPassword(existingUser.getNewPassword());
 
         userRepository.save(user);
-        return "redirect:/users";
+        return "index";
+    }
+
+    @PostMapping("/update/password/{id}")
+    public String updateUserPassword(@PathVariable("id") int id, User user, BindingResult result){
+        if (result.hasErrors()) {
+            user.setId(id);
+            return "update-user";
+        }
+
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if (!bCryptPasswordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+            result.rejectValue("password", "error.user", "A megadott jelszó nem egyezik a jelenlegi jelszóval!");
+            return "update-user";
+        }
+
+        if (user.getNewPassword().length() < 4) {
+            result.rejectValue("newPassword", "error.user", "A megadott új jelszó hosszabb kell legyen, mint 3 karakter!");
+            return "update-user";
+        }
+
+        existingUser.setPassword(bCryptPasswordEncoder.encode(user.getNewPassword()));
+        userRepository.save(existingUser);
+        return "index";
     }
 
     @GetMapping("/delete/{id}")

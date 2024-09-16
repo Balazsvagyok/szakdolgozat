@@ -21,6 +21,10 @@ form {
     margin: 0 0 10px 0;
 }
 
+input {
+    box-shadow: lightblue 5px 5px;
+}
+
 input[type="text"],
 input[type="password"],
 input[type="email"]{

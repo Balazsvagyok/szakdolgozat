@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/registration.css" type="text/css">
     <title>Adatok</title>
 </head>
 <body>
-<div class="center">
-    <form th:action="@{/logout}" method="post">
-        <h1>
-            Üdvözöllek <b><span sec:authentication="principal.username"></span></b>
-        </h1>
-        <input type="submit" value="Kijelentkezés"/>
-    </form>
-</div>
+
+<h1 class="center">
+    Üdvözöllek <b><span sec:authentication="principal.username"></span></b>
+</h1>
+
+<div class="center back_btn"><a id="back_btn" th:href="@{/}">Vissza</a></div>
 
 <table id="users_tbl" class="center">
     <thead>
@@ -31,14 +30,16 @@
         <td th:text="${user.getEmail()}">Email</td>
         <td th:text="${user.getRole()}">Role</td>
         <td><a th:href="@{/edit/{id}(id=${user.id})}">Módosítás</a></td>
-        <td><a th:href="@{/delete/{id}(id=${user.id})}">Törlés</a></td>
-        <!--
-        <td th:if="${user.getUsername() == #authentication.getName()}">
-            <a th:href="@{/demo/edit/{id}(id=${user.id})}">Módosítás</a>
-        </td>
-        -->
+        <td><a th:href="@{/delete/{id}(id=${user.id})}" onclick="return confirmDelete()">Törlés</a></td>
     </tr>
     </tbody>
 </table>
+
+<script>
+    function confirmDelete() {
+        return confirm("Biztosan törölni szeretnéd ezt a felhasználót?");
+    }
+</script>
+
 </body>
 </html>

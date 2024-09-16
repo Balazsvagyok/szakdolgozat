@@ -10,6 +10,7 @@
 
 <div class="header">
     <h1>Education</h1>
+    <p sec:authorize="isAuthenticated()">Bejelentkezve: <span sec:authentication="principal.username"></span></p>
     <ul th:switch="${role}">
         <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a></li>
         <li><a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
