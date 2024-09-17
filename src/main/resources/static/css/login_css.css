@@ -18,7 +18,9 @@ body {
 }
 
 form {
-    margin: 0 0 10px 0;
+    margin: 10px 0;
+    font-size: 120%;
+    font-weight: bold;
 }
 
 input {
@@ -28,6 +30,7 @@ input {
 input[type="text"],
 input[type="password"],
 input[type="email"]{
+    margin: 10px;
     width: 20%;
     height: 40px;
     border-radius: 5px;
@@ -58,4 +61,10 @@ input[type="submit"] {
 
 .ctrl_btn, .ctrl_btn:visited, .ctrl_btn:active {
     text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    padding: 10px;
 }

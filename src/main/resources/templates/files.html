@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Feltöltött fájlok</title>
+    <link rel="stylesheet" href="/css/index_css.css">
+</head>
+<body>
+
+<h1>Fájl feltöltése</h1>
+
+<form method="post" enctype="multipart/form-data" th:action="@{/upload}">
+    <input type="file" name="file" required/>
+    <button type="submit">Feltöltés</button>
+</form>
+
+<div th:if="${message}">
+    <p th:text="${message}"></p>
+</div>
+
+<h1 class="center">Feltöltött fájlok</h1>
+<table class="center">
+    <thead>
+    <tr>
+        <th>Név</th>
+        <th>Típus</th>
+        <th>Méret</th>
+        <th>Letöltés</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="file : ${files}">
+        <td th:text="${file.name}"></td>
+        <td th:text="${file.type}"></td>
+        <td th:text="${file.size}"></td>
+        <td><a th:href="${file.url}" target="_blank">Letöltés</a></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
