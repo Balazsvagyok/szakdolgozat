@@ -61,7 +61,7 @@ a {
     color: white;
 }
 
-#users_tbl {
+.table {
     background-color: white;
     padding: 5vh;
     border-radius: 1vh;

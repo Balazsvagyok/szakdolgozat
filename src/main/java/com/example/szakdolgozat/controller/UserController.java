@@ -2,6 +2,7 @@ package com.example.szakdolgozat.controller;
 
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.UserRepository;
+import com.example.szakdolgozat.service.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Objects;
 
 @Controller
 @RequestMapping
@@ -113,19 +117,29 @@ public class UserController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") int id, User user, BindingResult result) {
+    public String updateUser(@PathVariable("id") int id, User user, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             user.setId(id);
             return "update-user";
         }
-        User existingUser = userRepository.findById(id).get();
-        user.setPassword(existingUser.getPassword());
-        user.setRole(existingUser.getRole());
-        user.setNewPassword(existingUser.getNewPassword());
 
-        userRepository.save(user);
-        return "index";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+        User loggedInUser = userPrincipal.getUser();
+
+        if (loggedInUser.getId().equals(id)) {
+            loggedInUser.setUsername(user.getUsername());
+            loggedInUser.setEmail(user.getEmail());
+
+            userRepository.save(loggedInUser);
+            redirectAttributes.addFlashAttribute("message", "Felhasználó sikeresen frissítve!");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "Csak a saját felhasználódat módosíthatod!");
+        }
+
+        return "redirect:/";
     }
+
 
     @PostMapping("/update/password/{id}")
     public String updateUserPassword(@PathVariable("id") int id, User user, BindingResult result){

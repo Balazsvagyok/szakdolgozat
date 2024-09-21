@@ -6,19 +6,22 @@
 </head>
 <body>
 
-<h1>Fájl feltöltése</h1>
+<div class="center back_btn"><a id="back_btn" th:href="@{/}">Vissza</a></div>
 
-<form method="post" enctype="multipart/form-data" th:action="@{/upload}">
+<h1 class="center">Fájl feltöltése</h1>
+
+<form class="center" method="post" enctype="multipart/form-data" th:action="@{/upload}">
     <input type="file" name="file" required/>
     <button type="submit">Feltöltés</button>
 </form>
+<br>
 
-<div th:if="${message}">
+<div class="center error" th:if="${message}">
     <p th:text="${message}"></p>
 </div>
 
 <h1 class="center">Feltöltött fájlok</h1>
-<table class="center">
+<table class="center table">
     <thead>
     <tr>
         <th>Név</th>
@@ -33,6 +36,12 @@
         <td th:text="${file.type}"></td>
         <td th:text="${file.size}"></td>
         <td><a th:href="${file.url}" target="_blank">Letöltés</a></td>
+        <td>
+            <form th:action="@{'/files/' + ${file.id}}" method="post">
+                <input type="hidden" name="_method" value="delete" />
+                <button type="submit">Törlés</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>

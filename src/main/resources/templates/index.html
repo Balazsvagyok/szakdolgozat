@@ -10,7 +10,7 @@
 
 <div class="header">
     <h1>Education</h1>
-    <p sec:authorize="isAuthenticated()">Bejelentkezve: <span sec:authentication="principal.username"></span></p>
+    <p sec:authorize="isAuthenticated()">Bejelentkezve, mint <strong><span sec:authentication="principal.username"></span></strong></p>
     <ul th:switch="${role}">
         <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a></li>
         <li><a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
@@ -28,6 +28,10 @@
     </ul>
 </div>
 
+<div class="center" th:if="${message}">
+    <p th:text="${message}"></p>
+</div>
+
 <div class="flex_container">
     <div class="flex_child">
         <h1 id="hero_text">
@@ -37,7 +41,7 @@
         </h1>
     </div>
     <div id="hero_div_block" class="flex_child">
-        <a th:href="@{/users}" id="tananyagok">Tananyagok</a>
+        <a th:href="@{/files}" id="tananyagok">Tananyagok</a>
     </div>
 </div>
 

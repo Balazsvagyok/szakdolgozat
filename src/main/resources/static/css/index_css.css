@@ -9,8 +9,6 @@ body {
     background-size: 100% 100%;
     width: 100%;
     height: 100%;
-    margin: 0;
-    padding: 0;
     overflow: hidden;
 }
 
@@ -46,6 +44,50 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+}
+
+.table {
+    background-color: white;
+    padding: 5vh;
+    border-radius: 1vh;
+}
+
+td {
+    padding: 5px 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    padding: 10px;
+    transition: 0.2s;
+}
+
+a:hover {
+    text-decoration: none;
+    color: black;
+    padding: 10px;
+    background-color: lightgray;
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.back_btn {
+    margin-top: 20px;
+    width: 10%;
+    height: 40px;
+    background-color: #000;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+#back_btn {
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    margin: 10px;
+    transition: 0.2s;
 }
 
 #regisztracio {
