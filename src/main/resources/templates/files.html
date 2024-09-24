@@ -8,11 +8,24 @@
 
 <div class="center back_btn"><a id="back_btn" th:href="@{/}">Vissza</a></div>
 
-<h1 class="center">Fájl feltöltése</h1>
-
-<form class="center" method="post" enctype="multipart/form-data" th:action="@{/upload}">
-    <input type="file" name="file" required/>
-    <button type="submit">Feltöltés</button>
+<form th:if="${role} == 'ADMIN'" class="center" method="post" enctype="multipart/form-data" th:action="@{/upload}">
+    <h1 class="center">Fájl feltöltése</h1>
+    <div>
+        <label for="file">Fájl:</label><br>
+        <input type="file" id="file" name="file" required>
+    </div>
+    <div>
+        <label for="description">Leírás:</label><br>
+        <textarea id="description" name="description" rows="4" cols="50" maxlength="250"
+                  placeholder="Maximum 250 karakter"></textarea>
+    </div>
+    <div>
+        <label for="price">Ár:</label><br>
+        <input type="text" id="price" name="price">
+    </div>
+    <div>
+        <button type="submit">Feltöltés</button>
+    </div>
 </form>
 <br>
 
@@ -20,30 +33,38 @@
     <p th:text="${message}"></p>
 </div>
 
-<h1 class="center">Feltöltött fájlok</h1>
-<table class="center table">
-    <thead>
-    <tr>
-        <th>Név</th>
-        <th>Típus</th>
-        <th>Méret</th>
-        <th>Letöltés</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="file : ${files}">
-        <td th:text="${file.name}"></td>
-        <td th:text="${file.type}"></td>
-        <td th:text="${file.size}"></td>
-        <td><a th:href="${file.url}" target="_blank">Letöltés</a></td>
-        <td>
-            <form th:action="@{'/files/' + ${file.id}}" method="post">
-                <input type="hidden" name="_method" value="delete" />
-                <button type="submit">Törlés</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div>
+    <h1 class="center">Feltöltött fájlok</h1>
+    <table class="center table">
+        <thead>
+        <tr>
+            <th>Név</th>
+            <th>Típus</th>
+            <th>Méret</th>
+            <th>Ár</th>
+            <th>Leírás</th>
+            <th th:if="${role} == 'ADMIN'">Módosítás</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="file : ${files}">
+            <td th:text="${file.name}"></td>
+            <td th:text="${file.type}"></td>
+            <td th:text="${file.size}"></td>
+            <td th:text="${file.price}"></td>
+            <td th:text="${file.description}"></td>
+            <td><a th:if="${role} == 'ADMIN'" th:href="@{/files/edit/{id}(id=${file.id})}">Szerkesztés</a></td>
+            <td><a th:href="${file.url}" target="_blank">Letöltés</a></td>
+            <td>
+                <form th:if="${role} == 'ADMIN'" th:action="@{'/files/' + ${file.id}}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit">Törlés</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>

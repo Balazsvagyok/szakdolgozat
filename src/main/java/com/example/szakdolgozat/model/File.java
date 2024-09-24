@@ -21,8 +21,8 @@ public class File {
 
     private Double price;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "uploaderId", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "uploader_id", referencedColumnName = "id")
     private User user;
 
     public File(){

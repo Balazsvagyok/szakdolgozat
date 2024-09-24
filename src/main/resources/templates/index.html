@@ -10,23 +10,30 @@
 
 <div class="header">
     <h1>Education</h1>
-    <p sec:authorize="isAuthenticated()">Bejelentkezve, mint <strong><span sec:authentication="principal.username"></span></strong></p>
-    <ul th:switch="${role}">
-        <li><a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a></li>
-        <li><a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
-        </li>
-        <li><a sec:authorize="isAuthenticated()" th:href="@{/profile}" id="profile">Profilom</a></li>
-        <li><a th:case="'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}"
-               id="felhasznalok">Felhasználók</a></li>
-        <li>
-            <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem"
-               id="kijelentkezes">Kijelentkezés</a>
-            <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
-                <input hidden type="submit" value="Kijelentkezés"/>
-            </form>
-        </li>
-    </ul>
+    <p sec:authorize="isAuthenticated()">Bejelentkezve, mint <strong><span
+            sec:authentication="principal.username"></span></strong></p>
+    <div class="nav-links">
+        <a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a>
+        <a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
+        <div class="dropdown">
+            <a class="drop-link" sec:authorize="isAuthenticated()" th:href="@{/profile}" id="profile">Profilom</a>
+            <div class="dropdown-content">
+                <a th:if="${role} == 'ADMIN'" th:href="@{/files}">Feltöltött tananyagok</a>
+                <a th:if="${role} == 'ADMIN'" href="#">Tananyag feltöltése</a>
+                <a th:if="${role} == 'USER'" href="#">Megvásárolt tananyagok</a>
+                <a th:href="@{/edit/{id}(id=${id})}">Profil módosítása</a>
+            </div>
+        </div>
+        <a th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/files}" id="fajlok">Fájlok</a>
+        <a th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}" id="felhasznalok">Felhasználók</a>
+        <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem"
+           id="kijelentkezes">Kijelentkezés</a>
+        <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+            <input hidden type="submit" value="Kijelentkezés"/>
+        </form>
+    </div>
 </div>
+
 
 <div class="center" th:if="${message}">
     <p th:text="${message}"></p>

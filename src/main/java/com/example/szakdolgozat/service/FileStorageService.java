@@ -24,6 +24,10 @@ public class FileStorageService {
         return fileRepository.save(File);
     }
 
+    public File saveFile(File file) throws IOException {
+        return fileRepository.save(file);
+    }
+
     public File getFile(String id) {
         return fileRepository.findById(id).get();
     }

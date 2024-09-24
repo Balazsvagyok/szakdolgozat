@@ -30,8 +30,10 @@ public class UserController {
         User user = userRepository.findByUsername(name);
         if (user != null) {
             String role = user.getRole();
+            int id = user.getId();
 //          System.out.println(role);
             model.addAttribute("role", role);
+            model.addAttribute("id", id);
         }
         return "index";
     }
@@ -167,7 +169,7 @@ public class UserController {
         return "index";
     }
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") int id, Model model) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));

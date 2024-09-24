@@ -7,13 +7,17 @@ public class ResponseFile {
     private String url;
     private String type;
     private long size;
+    private String description;
+    private Double price;
 
-    public ResponseFile(int id, String name, String url, String type, long size) {
+    public ResponseFile(int id, String name, String url, String type, long size, String description, Double price) {
         this.id = id;
         this.name = name;
         this.url = url;
         this.type = type;
         this.size = size;
+        this.description = description;
+        this.price = price;
     }
 
     public int getId() {
@@ -54,5 +58,21 @@ public class ResponseFile {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
