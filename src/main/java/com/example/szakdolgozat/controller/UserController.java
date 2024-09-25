@@ -144,7 +144,7 @@ public class UserController {
 
 
     @PostMapping("/update/password/{id}")
-    public String updateUserPassword(@PathVariable("id") int id, User user, BindingResult result){
+    public String updateUserPassword(@PathVariable("id") int id, User user, BindingResult result, RedirectAttributes redirectAttributes){
         if (result.hasErrors()) {
             user.setId(id);
             return "update-user";
@@ -166,7 +166,8 @@ public class UserController {
 
         existingUser.setPassword(bCryptPasswordEncoder.encode(user.getNewPassword()));
         userRepository.save(existingUser);
-        return "index";
+        redirectAttributes.addFlashAttribute("message", "A jelszó sikeresen frissítve lett!");
+        return "redirect:/";
     }
 
     @PostMapping("/delete/{id}")

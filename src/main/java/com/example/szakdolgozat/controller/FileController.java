@@ -1,15 +1,13 @@
 package com.example.szakdolgozat.controller;
 
 import com.example.szakdolgozat.message.ResponseFile;
-import com.example.szakdolgozat.message.ResponseMessage;
 import com.example.szakdolgozat.model.File;
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
-import org.apache.logging.log4j.util.PerformanceSensitive;
+import com.example.szakdolgozat.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +30,38 @@ import java.util.stream.Collectors;
 public class FileController {
     @Autowired
     private FileStorageService storageService;
+    @Autowired
+    private VideoService videoService;
+
+    private static final String UPLOAD_DIR = "uploads/";
+
+
+    public void listVideos(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Iterable<String> videos = videoService.listAllVideos();
+            model.addAttribute("videos", videos);
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "Error reading video files");
+        }
+    }
+
+    @PostMapping("/upload/video")
+    public String uploadVideo(@RequestParam("file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+            Files.createDirectories(path.getParent());
+            Files.write(path, file.getBytes());
+            redirectAttributes.addFlashAttribute("message", "File uploaded successfully: " + file.getOriginalFilename());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Failed to upload file: " + e.getMessage());
+        }
+        return "redirect:/files";
+    }
 
 
     @GetMapping("/files")
-    public String getListFiles(Model model) {
+    public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userPrincipal = (CustomUserDetails) auth.getPrincipal();
         User loggedInUser = userPrincipal.getUser();
@@ -54,6 +84,7 @@ public class FileController {
                         file.getPrice());
             }).collect(Collectors.toList());
 
+            listVideos(model, redirectAttributes);
             model.addAttribute("files", files);
             model.addAttribute("role", loggedInUser.getRole());
             return "files";

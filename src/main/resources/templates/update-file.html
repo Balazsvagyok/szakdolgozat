@@ -1,37 +1,38 @@
 <!DOCTYPE html>
 <html lang="hu" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fájl szerkesztése</title>
-  <link rel="stylesheet" href="/css/index_css.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fájl szerkesztése</title>
+    <link rel="stylesheet" href="/css/index_css.css">
 </head>
 <body>
 <h1 class="center">Fájl szerkesztése</h1>
 <form class="center" th:action="@{/files/update/{id}(id=${id})}" th:object="${file}" method="post">
-  <div>
-    <label for="name">Fájl neve:</label>
-    <input type="text" id="name" th:field="*{name}" readonly>
-  </div>
-  <div>
-    <label for="type">Fájl típusa:</label>
-    <input type="text" id="type" th:field="*{type}" readonly>
-  </div>
-<!--  <div>-->
-<!--    <label for="size">Fájl mérete:</label>-->
-<!--    <input type="text" id="size" th:field="*{}" readonly>-->
-<!--  </div>-->
-  <div>
-    <label for="description">Leírás:</label>
-    <textarea id="description" th:field="*{description}" rows="4" cols="50" maxlength="250" placeholder="Maximum 250 karakter"></textarea>
-  </div>
-  <div>
-    <label for="price">Ár:</label>
-    <input type="number" id="price" th:field="*{price}">
-  </div>
-  <div>
-    <button type="submit">Mentés</button>
-  </div>
+    <div>
+        <label for="name">Fájl neve:</label>
+        <input type="text" id="name" th:field="*{name}" readonly>
+    </div>
+    <div>
+        <label for="type">Fájl típusa:</label>
+        <input type="text" id="type" th:field="*{type}" readonly>
+    </div>
+    <!--  <div>-->
+    <!--    <label for="size">Fájl mérete:</label>-->
+    <!--    <input type="text" id="size" th:field="*{}" readonly>-->
+    <!--  </div>-->
+    <div>
+        <label for="description">Leírás:</label>
+        <textarea id="description" th:field="*{description}" rows="4" cols="50" maxlength="250"
+                  placeholder="Maximum 250 karakter"></textarea>
+    </div>
+    <div>
+        <label for="price">Ár:</label>
+        <input type="number" id="price" th:field="*{price}">
+    </div>
+    <div>
+        <button type="submit">Mentés</button><br>
+    </div>
 </form>
 </body>
 </html>

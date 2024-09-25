@@ -14,7 +14,7 @@
       th:action="@{/update/{id}(id=${user.id})}"
       th:object="${user}"
       method="post" class="center">
-    <label for="username">Name</label><br>
+    <label for="username">Név</label><br>
     <input type="text" th:field="*{username}" id="username" placeholder="Username"><br>
     <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span><br>
 
@@ -29,11 +29,11 @@
       th:action="@{/update/password/{id}(id=${user.id})}"
       th:object="${user}"
       method="post" class="center">
-    <label for="oldPassword">Old password</label><br>
+    <label for="oldPassword">Régi jelszó</label><br>
     <input type="password" th:field="*{password}" id="oldPassword" placeholder="Old password"><br>
     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span><br>
 
-    <label for="newPassword">New password</label><br>
+    <label for="newPassword">Új jelszó</label><br>
     <input type="password" th:field="*{newPassword}" id="newPassword" placeholder="New password"><br>
     <span th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></span><br>
 

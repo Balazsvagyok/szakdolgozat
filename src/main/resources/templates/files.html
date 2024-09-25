@@ -64,6 +64,25 @@
         </tr>
         </tbody>
     </table>
+
+    <h1>List of Videos</h1>
+    <ul>
+        <li th:each="video : ${videos}">
+            <a th:href="@{'/videos/play/' + ${video}}" th:text="${video}">Videó</a>
+        </li>
+    </ul>
+
+    <h1>Upload Video</h1>
+    <form method="post" enctype="multipart/form-data" th:action="@{/upload/video}">
+        <input type="file" name="file" accept="video/*" required>
+        <button type="submit">Upload</button>
+    </form>
+
+<!--    <h1>Play Video</h1>-->
+<!--    <video width="320" height="240" controls>-->
+<!--        <source th:src="@{/videos/play/szakdogaeddig.mp4}" type="video/mp4">-->
+<!--        Your browser does not support the video tag.-->
+<!--    </video>-->
 </div>
 
 </body>
