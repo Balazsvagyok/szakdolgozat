@@ -9,21 +9,14 @@ public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Lob
     private byte[] data;
-
     private String name;
-
     private String description;
-
     private String type;
-
     private Double price;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "uploader_id", referencedColumnName = "id")
-    private User user;
+    @ManyToOne
+    private User uploader;
 
     public File(){
 
@@ -83,11 +76,11 @@ public class File {
         this.price = price;
     }
 
-    public User getUser() {
-        return user;
+    public User getUploader() {
+        return uploader;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUploader(User uploaderId) {
+        this.uploader = uploaderId;
     }
 }

@@ -1,7 +1,9 @@
 package com.example.szakdolgozat.service;
 
 import com.example.szakdolgozat.model.File;
+import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.FileRepository;
+import com.example.szakdolgozat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,9 @@ public class FileStorageService {
     @Autowired
     private FileRepository fileRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public File store(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         File File = new File(fileName, file.getContentType(), file.getBytes());
@@ -24,8 +29,8 @@ public class FileStorageService {
         return fileRepository.save(File);
     }
 
-    public File saveFile(File file) throws IOException {
-        return fileRepository.save(file);
+    public void saveFile(File file) throws IOException {
+        fileRepository.save(file);
     }
 
     public File getFile(String id) {

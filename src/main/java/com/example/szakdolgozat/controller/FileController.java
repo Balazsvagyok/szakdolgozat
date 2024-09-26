@@ -3,14 +3,17 @@ package com.example.szakdolgozat.controller;
 import com.example.szakdolgozat.message.ResponseFile;
 import com.example.szakdolgozat.model.File;
 import com.example.szakdolgozat.model.User;
-import com.example.szakdolgozat.service.CustomUserDetails;
+import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.FileStorageService;
 import com.example.szakdolgozat.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +36,8 @@ public class FileController {
     private FileStorageService storageService;
     @Autowired
     private VideoService videoService;
+    @Autowired
+    private UserRepository userRepository;
 
     private static final String UPLOAD_DIR = "uploads/";
 
@@ -61,12 +67,12 @@ public class FileController {
 
 
     @GetMapping("/files")
-    public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userPrincipal = (CustomUserDetails) auth.getPrincipal();
-        User loggedInUser = userPrincipal.getUser();
+    public String getListFiles(@AuthenticationPrincipal UserDetails user, Model model, RedirectAttributes redirectAttributes) {
+        // Bejelentkezett felhasználó lekérése és szerep meghatározása, Collection -> String
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(","));
 
-        if (loggedInUser.getRole().equals("ADMIN") || loggedInUser.getRole().equals("USER")) {
+        if (user != null) {
             List<ResponseFile> files = storageService.getAllFiles().map(file -> {
                 String fileDownloadUri = ServletUriComponentsBuilder
                         .fromCurrentContextPath()
@@ -86,10 +92,10 @@ public class FileController {
 
             listVideos(model, redirectAttributes);
             model.addAttribute("files", files);
-            model.addAttribute("role", loggedInUser.getRole());
+            model.addAttribute("role", role);
             return "files";
         } else {
-            return "redirect:/";
+            return "redirect:/login";
         }
     }
 
@@ -99,12 +105,17 @@ public class FileController {
                              @RequestParam("price") Double price, RedirectAttributes redirectAttributes) {
         String message = "";
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User user = userRepository.findByUsername(userDetails.getUsername());
+
             File newFile = new File();
             newFile.setName(file.getOriginalFilename());
             newFile.setType(file.getContentType());
             newFile.setDescription(description);
             newFile.setPrice(price);
-            newFile.setData(file.getBytes()); // Assuming you have a data field to store the file content
+            newFile.setData(file.getBytes());
+            newFile.setUploader(user);
 
             storageService.saveFile(newFile);
             message = "Sikeres fájl feltöltés: " + file.getOriginalFilename();
@@ -124,7 +135,8 @@ public class FileController {
     }
 
     @PostMapping("/files/update/{id}")
-    public String updateFile(@PathVariable("id") Long id, @ModelAttribute File file, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String updateFile(@PathVariable("id") Long id, @ModelAttribute File file, BindingResult result,
+                             RedirectAttributes redirectAttributes) {
         String message = "";
         try {
             File existingFile = storageService.getFile(String.valueOf(id));

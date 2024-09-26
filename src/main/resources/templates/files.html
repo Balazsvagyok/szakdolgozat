@@ -33,7 +33,7 @@
     <p th:text="${message}"></p>
 </div>
 
-<div>
+<div class="center">
     <h1 class="center">Feltöltött fájlok</h1>
     <table class="center table">
         <thead>
@@ -66,11 +66,18 @@
     </table>
 
     <h1>List of Videos</h1>
-    <ul>
-        <li th:each="video : ${videos}">
-            <a th:href="@{'/videos/play/' + ${video}}" th:text="${video}">Videó</a>
-        </li>
-    </ul>
+    <table class="table center">
+        <thead>
+            <tr>
+                <th>Név</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="video : ${videos}">
+                <td><a th:href="@{'/videos/play/' + ${video}}" th:text="${video}">Videó</a></td>
+            </tr>
+        </tbody>
+    </table>
 
     <h1>Upload Video</h1>
     <form method="post" enctype="multipart/form-data" th:action="@{/upload/video}">
