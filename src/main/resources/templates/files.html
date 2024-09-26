@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="hu">
 <head>
     <title>Feltöltött fájlok</title>
     <link rel="stylesheet" href="/css/index_css.css">
@@ -43,7 +43,8 @@
             <th>Méret</th>
             <th>Ár</th>
             <th>Leírás</th>
-            <th th:if="${role} == 'ADMIN'">Módosítás</th>
+            <th>Feltöltő</th>
+            <!--            <th th:if="${role} == 'ADMIN'">Módosítás</th>-->
         </tr>
         </thead>
         <tbody>
@@ -53,10 +54,12 @@
             <td th:text="${file.size}"></td>
             <td th:text="${file.price}"></td>
             <td th:text="${file.description}"></td>
-            <td><a th:if="${role} == 'ADMIN'" th:href="@{/files/edit/{id}(id=${file.id})}">Szerkesztés</a></td>
+            <td th:text="${file.uploader.username}"></td>
+            <td><a th:if="${file.uploader.id} == ${user.getId()}" th:href="@{/files/edit/{id}(id=${file.id})}">Szerkesztés</a>
+            </td>
             <td><a th:href="${file.url}" target="_blank">Letöltés</a></td>
             <td>
-                <form th:if="${role} == 'ADMIN'" th:action="@{'/files/' + ${file.id}}" method="post">
+                <form th:if="${file.uploader.id} == ${user.id}" th:action="@{'/files/' + ${file.id}}" method="post">
                     <input type="hidden" name="_method" value="delete"/>
                     <button type="submit">Törlés</button>
                 </form>
@@ -65,31 +68,33 @@
         </tbody>
     </table>
 
-    <h1>List of Videos</h1>
+    <h1>Feltöltött videók</h1>
     <table class="table center">
         <thead>
-            <tr>
-                <th>Név</th>
-            </tr>
+        <tr>
+            <th>Név</th>
+        </tr>
         </thead>
         <tbody>
-            <tr th:each="video : ${videos}">
-                <td><a th:href="@{'/videos/play/' + ${video}}" th:text="${video}">Videó</a></td>
-            </tr>
+        <tr th:each="video : ${videos}">
+            <td><a th:href="@{'/videos/play/' + ${video}}" th:text="${video}">Videó</a></td>
+        </tr>
         </tbody>
     </table>
 
-    <h1>Upload Video</h1>
-    <form method="post" enctype="multipart/form-data" th:action="@{/upload/video}">
-        <input type="file" name="file" accept="video/*" required>
-        <button type="submit">Upload</button>
-    </form>
+    <div th:if="${role} == 'ADMIN'">
+        <h1>Videó feltöltése</h1>
+        <form method="post" enctype="multipart/form-data" th:action="@{/upload/video}">
+            <input type="file" name="file" accept="video/*" required>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
 
-<!--    <h1>Play Video</h1>-->
-<!--    <video width="320" height="240" controls>-->
-<!--        <source th:src="@{/videos/play/szakdogaeddig.mp4}" type="video/mp4">-->
-<!--        Your browser does not support the video tag.-->
-<!--    </video>-->
+    <!--    <h1>Play Video</h1>-->
+    <!--    <video width="320" height="240" controls>-->
+    <!--        <source th:src="@{/videos/play/szakdogaeddig.mp4}" type="video/mp4">-->
+    <!--        Your browser does not support the video tag.-->
+    <!--    </video>-->
 </div>
 
 </body>

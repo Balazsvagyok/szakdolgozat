@@ -4,19 +4,18 @@ import com.example.szakdolgozat.message.ResponseFile;
 import com.example.szakdolgozat.model.File;
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.UserRepository;
+import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
 import com.example.szakdolgozat.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +51,7 @@ public class FileController {
     }
 
     @PostMapping("/upload/video")
-    public String uploadVideo(@RequestParam("file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
+    public String uploadVideo(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         try {
             Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
             Files.createDirectories(path.getParent());
@@ -87,10 +85,15 @@ public class FileController {
                         file.getType(),
                         file.getData().length,
                         file.getDescription(),
-                        file.getPrice());
+                        file.getPrice(),
+                        file.getUploader());
             }).collect(Collectors.toList());
 
+            CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+            User loggedInUser = userPrincipal.getUser();
+
             listVideos(model, redirectAttributes);
+            model.addAttribute("user", loggedInUser);
             model.addAttribute("files", files);
             model.addAttribute("role", role);
             return "files";
@@ -103,7 +106,7 @@ public class FileController {
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description,
                              @RequestParam("price") Double price, RedirectAttributes redirectAttributes) {
-        String message = "";
+        String message;
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -135,9 +138,9 @@ public class FileController {
     }
 
     @PostMapping("/files/update/{id}")
-    public String updateFile(@PathVariable("id") Long id, @ModelAttribute File file, BindingResult result,
+    public String updateFile(@PathVariable("id") Long id, @ModelAttribute File file,
                              RedirectAttributes redirectAttributes) {
-        String message = "";
+        String message;
         try {
             File existingFile = storageService.getFile(String.valueOf(id));
             existingFile.setDescription(file.getDescription());

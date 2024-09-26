@@ -1,5 +1,7 @@
 package com.example.szakdolgozat.message;
 
+import com.example.szakdolgozat.model.User;
+
 public class ResponseFile {
 
     private int id;
@@ -9,8 +11,9 @@ public class ResponseFile {
     private long size;
     private String description;
     private Double price;
+    private User uploader;
 
-    public ResponseFile(int id, String name, String url, String type, long size, String description, Double price) {
+    public ResponseFile(int id, String name, String url, String type, long size, String description, Double price, User uploader) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -18,6 +21,7 @@ public class ResponseFile {
         this.size = size;
         this.description = description;
         this.price = price;
+        this.uploader = uploader;
     }
 
     public int getId() {
@@ -74,5 +78,13 @@ public class ResponseFile {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public User getUploader() {
+        return uploader;
+    }
+
+    public void setUploader(User uploader) {
+        this.uploader = uploader;
     }
 }
