@@ -17,7 +17,11 @@
     <h2>Role:</h2>
     <p th:text="${role}">Role</p>
 
-    <a th:href="@{/edit/{id}(id=${id})}">Módosítás</a>
+    <form method="post" enctype="multipart/form-data" th:action="@{/edit/{id}(id=${id})}">
+        <button type="submit">Módosítás</button>
+    </form>
+
+<!--    <a th:href="@{/edit/{id}(id=${id})}">Módosítás</a>-->
 </div>
 
 </body>

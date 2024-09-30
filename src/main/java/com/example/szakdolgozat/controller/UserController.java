@@ -109,7 +109,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/edit/{id}")
+    @PostMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
@@ -129,11 +129,14 @@ public class UserController {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
         User loggedInUser = userPrincipal.getUser();
 
-        if (loggedInUser.getId().equals(id)) {
-            loggedInUser.setUsername(user.getUsername());
-            loggedInUser.setEmail(user.getEmail());
+        if (loggedInUser.getId().equals(id) || loggedInUser.getRole().equals("ADMIN")) {
+            User userToUpdate = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User not found!"));
 
-            userRepository.save(loggedInUser);
+            userToUpdate.setUsername(user.getUsername());
+            userToUpdate.setEmail(user.getEmail());
+            userRepository.save(userToUpdate);
+
             redirectAttributes.addFlashAttribute("message", "Felhasználó sikeresen frissítve!");
         } else {
             redirectAttributes.addFlashAttribute("message", "Csak a saját felhasználódat módosíthatod!");

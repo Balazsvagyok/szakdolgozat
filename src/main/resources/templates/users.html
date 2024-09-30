@@ -29,13 +29,19 @@
         <td th:text="${user.getUsername()}">Név</td>
         <td th:text="${user.getEmail()}">Email</td>
         <td th:text="${user.getRole()}">Role</td>
-        <td><a th:href="@{/edit/{id}(id=${user.id})}">Módosítás</a></td>
+        <td>
+<!--            <a th:href="@{/edit/{id}(id=${user.id})}">Módosítás</a>-->
+            <form th:action="@{'/edit/' + ${user.id}}" method="post">
+                <button type="submit">Módosítás</button>
+            </form>
+        </td>
         <td>
 <!--            <a th:href="@{/delete/{id}(id=${user.id})}" onclick="return confirmDelete()">Törlés</a>-->
             <form th:action="@{'/delete/' + ${user.id}}" method="post" onclick="return confirmDelete()">
                 <input type="hidden" name="_method" value="delete"/>
                 <button type="submit">Törlés</button>
-            </form></td>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>

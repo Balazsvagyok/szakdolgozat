@@ -40,7 +40,7 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider());
 
         http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/demo/users").authenticated()
+                        auth.requestMatchers("/*", "/edit/*").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .formLogin(login ->

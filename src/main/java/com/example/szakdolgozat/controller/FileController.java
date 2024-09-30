@@ -70,36 +70,34 @@ public class FileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String role = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(","));
 
-        if (user != null) {
-            List<ResponseFile> files = storageService.getAllFiles().map(file -> {
-                String fileDownloadUri = ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/files/")
-                        .path(String.valueOf(file.getId()))
-                        .toUriString();
 
-                return new ResponseFile(
-                        file.getId(),
-                        file.getName(),
-                        fileDownloadUri,
-                        file.getType(),
-                        file.getData().length,
-                        file.getDescription(),
-                        file.getPrice(),
-                        file.getUploader());
-            }).collect(Collectors.toList());
+        List<ResponseFile> files = storageService.getAllFiles().map(file -> {
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(String.valueOf(file.getId()))
+                    .toUriString();
 
-            CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
-            User loggedInUser = userPrincipal.getUser();
+            return new ResponseFile(
+                    file.getId(),
+                    file.getName(),
+                    fileDownloadUri,
+                    file.getType(),
+                    file.getData().length,
+                    file.getDescription(),
+                    file.getPrice(),
+                    file.getUploader());
+        }).collect(Collectors.toList());
 
-            listVideos(model, redirectAttributes);
-            model.addAttribute("user", loggedInUser);
-            model.addAttribute("files", files);
-            model.addAttribute("role", role);
-            return "files";
-        } else {
-            return "redirect:/login";
-        }
+        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+        User loggedInUser = userPrincipal.getUser();
+
+        listVideos(model, redirectAttributes);
+        model.addAttribute("user", loggedInUser);
+        model.addAttribute("files", files);
+        model.addAttribute("role", role);
+        return "files";
+
     }
 
 
