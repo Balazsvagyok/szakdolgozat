@@ -2,7 +2,10 @@ package com.example.szakdolgozat.controller;
 
 import com.example.szakdolgozat.message.ResponseFile;
 import com.example.szakdolgozat.model.File;
+import com.example.szakdolgozat.model.Purchase;
 import com.example.szakdolgozat.model.User;
+import com.example.szakdolgozat.repository.FileRepository;
+import com.example.szakdolgozat.repository.PurchaseRepository;
 import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
@@ -11,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,10 @@ public class FileController {
     private VideoService videoService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FileRepository fileRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     private static final String UPLOAD_DIR = "uploads/";
 
@@ -64,8 +71,9 @@ public class FileController {
     }
 
 
+    // Megvásárolható fájlok listázása az alábbi úton
     @GetMapping("/files")
-    public String getListFiles(@AuthenticationPrincipal UserDetails user, Model model, RedirectAttributes redirectAttributes) {
+    public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
         // Bejelentkezett felhasználó lekérése és szerep meghatározása, Collection -> String
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String role = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(","));
@@ -97,6 +105,62 @@ public class FileController {
         model.addAttribute("role", role);
         return "files";
     }
+
+    // Megvásárolt fájlok listázása az alábbi úton
+    @GetMapping("/purchases")
+    public String getListPurchases(Model model, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(","));
+
+        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+        User loggedInUser = userPrincipal.getUser();
+
+        List<ResponseFile> files = storageService.getPurchasedFiles(loggedInUser).stream().map(file -> {
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(String.valueOf(file.getId()))
+                    .toUriString();
+
+            return new ResponseFile(
+                    file.getId(),
+                    file.getName(),
+                    fileDownloadUri,
+                    file.getType(),
+                    file.getData().length,
+                    file.getDescription(),
+                    file.getPrice(),
+                    file.getUploader());
+        }).collect(Collectors.toList());
+
+        listVideos(model, redirectAttributes);
+        model.addAttribute("user", loggedInUser);
+        model.addAttribute("files", files);
+        model.addAttribute("role", role);
+        return "purchases";
+    }
+
+    // Fájlok vásárlása és adatbázisba mentése
+    @PostMapping("/purchase/{fileId}")
+    public String purchaseFile(@PathVariable Integer fileId, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+        User loggedInUser = userPrincipal.getUser();
+
+        File file = fileRepository.findById(String.valueOf(fileId))
+                .orElseThrow(() -> new RuntimeException("File not found!"));
+
+        Purchase purchase = new Purchase();
+        purchase.setUser(loggedInUser);
+        purchase.setFile(file);
+        purchase.setPurchaseDate(new Date(System.currentTimeMillis()));
+
+        purchaseRepository.save(purchase);
+
+        redirectAttributes.addFlashAttribute("message", "Fájl sikeresen megvásárolva!");
+        return "redirect:/files";
+    }
+
 
 
     @PostMapping("/upload")

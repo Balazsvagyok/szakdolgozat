@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
-      lang="">
+      lang="hu">
 <head>
     <link rel="stylesheet" href="/css/index_css.css" type="text/css">
     <meta charset="UTF-8">
@@ -20,7 +20,7 @@
             <div class="dropdown-content">
                 <a th:if="${role} == 'ADMIN'" th:href="@{/files}">Feltöltött tananyagok</a>
                 <a th:if="${role} == 'ADMIN'" href="#">Tananyag feltöltése</a>
-                <a th:if="${role} == 'USER'" href="#">Megvásárolt tananyagok</a>
+                <a th:if="${role} == 'USER'" th:href="@{/purchases}">Megvásárolt tananyagok</a>
                 <form method="post" th:action="@{/edit/{id}(id=${id})}">
                     <button type="submit">Profil módosítása</button>
                 </form>

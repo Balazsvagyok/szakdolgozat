@@ -34,7 +34,8 @@
 </div>
 
 <div class="center">
-    <h1 class="center">Feltöltött fájlok</h1>
+    <h1 class="center" th:if="${role} == 'ADMIN'">Feltöltött fájlok</h1>
+    <h1 class="center" th:if="${role} == 'USER'">Megvásárolható anyagok</h1>
     <table class="center table">
         <thead>
         <tr>
@@ -57,7 +58,11 @@
             <td th:text="${file.uploader.username}"></td>
             <td><a th:if="${file.uploader.id} == ${user.getId()}" th:href="@{/files/edit/{id}(id=${file.id})}">Szerkesztés</a>
             </td>
-            <td><a th:href="${file.url}" target="_blank">Letöltés</a></td>
+            <td>
+                <form th:action="@{'/purchase/' + ${file.id}}" method="post">
+                    <button type="submit">Vásárlás</button>
+                </form>
+            </td>
             <td>
                 <form th:if="${file.uploader.id} == ${user.id}" th:action="@{'/files/' + ${file.id}}" method="post">
                     <input type="hidden" name="_method" value="delete"/>

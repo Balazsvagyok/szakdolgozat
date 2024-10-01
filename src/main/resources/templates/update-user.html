@@ -15,11 +15,11 @@
       th:object="${user}"
       method="post" class="center">
     <label for="username">Név</label><br>
-    <input type="text" th:field="*{username}" id="username" placeholder="Username"><br>
+    <input type="text" th:field="${user.username}" id="username" placeholder="Felhasználónév"><br>
     <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span><br>
 
     <label for="email">Email</label><br>
-    <input type="text" th:field="*{email}" id="email" placeholder="Email"><br>
+    <input type="text" th:field="${user.email}" id="email" placeholder="Email"><br>
     <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span><br>
 
     <input type="submit" value="Adatok módosítása"><br>
