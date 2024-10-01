@@ -21,7 +21,10 @@
                 <a th:if="${role} == 'ADMIN'" th:href="@{/files}">Feltöltött tananyagok</a>
                 <a th:if="${role} == 'ADMIN'" href="#">Tananyag feltöltése</a>
                 <a th:if="${role} == 'USER'" href="#">Megvásárolt tananyagok</a>
-                <a th:href="@{/edit/{id}(id=${id})}">Profil módosítása</a>
+                <form method="post" th:action="@{/edit/{id}(id=${id})}">
+                    <button type="submit">Profil módosítása</button>
+                </form>
+<!--            <a th:href="@{/edit/{id}(id=${id})}">Profil módosítása</a>-->
             </div>
         </div>
         <a th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/files}" id="fajlok">Fájlok</a>

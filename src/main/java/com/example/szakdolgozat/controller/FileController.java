@@ -70,7 +70,6 @@ public class FileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String role = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(","));
 
-
         List<ResponseFile> files = storageService.getAllFiles().map(file -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
@@ -97,7 +96,6 @@ public class FileController {
         model.addAttribute("files", files);
         model.addAttribute("role", role);
         return "files";
-
     }
 
 

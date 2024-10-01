@@ -29,7 +29,7 @@
       th:action="@{/update/password/{id}(id=${user.id})}"
       th:object="${user}"
       method="post" class="center">
-    <label for="oldPassword">Régi jelszó</label><br>
+    <label for="oldPassword">Jelenlegi jelszó</label><br>
     <input type="password" th:field="*{password}" id="oldPassword" placeholder="Old password"><br>
     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span><br>
 

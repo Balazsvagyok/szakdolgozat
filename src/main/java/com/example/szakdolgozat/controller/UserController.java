@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @RequestMapping
@@ -130,9 +131,15 @@ public class UserController {
         User loggedInUser = userPrincipal.getUser();
 
         if (loggedInUser.getId().equals(id) || loggedInUser.getRole().equals("ADMIN")) {
+
+            User existingUser = userRepository.findByUsername(user.getUsername());
+            if (existingUser.getUsername().equals(user.getUsername()) && existingUser.getId() != id){
+                redirectAttributes.addFlashAttribute("message", "A felhasználónév már létezik!");
+                return "redirect:/";
+            }
+
             User userToUpdate = userRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("User not found!"));
-
             userToUpdate.setUsername(user.getUsername());
             userToUpdate.setEmail(user.getEmail());
             userRepository.save(userToUpdate);
@@ -141,7 +148,6 @@ public class UserController {
         } else {
             redirectAttributes.addFlashAttribute("message", "Csak a saját felhasználódat módosíthatod!");
         }
-
         return "redirect:/";
     }
 
