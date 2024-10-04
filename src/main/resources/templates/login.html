@@ -1,27 +1,30 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html lang="hu" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="/css/login_css.css" type="text/css">
+    <link rel="stylesheet" href="/css/login.css" type="text/css">
 </head>
-
 <body>
 
 <h1 class="center">Bejelentkezés</h1>
 
-<form th:action="@{/login}" method="post" id="login-container">
-    <div><label> Felhasználónév: <br><input type="text" name="username"/> </label></div>
-    <div><label> Jelszó: <br><input type="password" name="password"/> </label></div>
-    <div th:if="${param.error}" class="error center">
-        Sikertelen bejelentkezés.
-    </div>
-    <div><input type="submit" value="Bejelentkezés"/></div>
-</form>
+<div id="login-container">
+    <form th:action="@{/login}" method="post">
+        <label>Felhasználónév: <input type="text" name="username"/> </label><br>
+        <label>Jelszó: <input type="password" name="password"/> </label><br>
+        <div th:if="${param.error}" class="error center">
+            Sikertelen bejelentkezés.
+        </div>
+        <br>
+        <div><input type="submit" value="Bejelentkezés"/></div>
+    </form>
+</div>
 
-
-<h3 class="center ctrl_btn"><a th:href="@{/registration}">Regisztráció</a></h3>
-<h3 class="center ctrl_btn"><a th:href="@{/}">Vissza</a></h3>
+<div style="width: 20%; margin: auto">
+    <h3 class="center ctrl_btn left"><a th:href="@{/registration}">Regisztráció</a></h3>
+    <h3 class="center ctrl_btn right"><a th:href="@{/}">Vissza</a></h3>
+</div>
 
 </body>
 </html>

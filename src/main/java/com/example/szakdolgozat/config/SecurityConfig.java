@@ -34,14 +34,17 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    // TODO: regisztráció megjelenik bejelentkezés után is. Javítani!
     @Bean
     SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
         http.authenticationProvider(authenticationProvider());
 
-        http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/*", "/edit/*").authenticated()
-                                .anyRequest().permitAll()
+        http.authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/registration").permitAll()
+                        .requestMatchers("/*").authenticated()
+                        .anyRequest().permitAll()
+
                 )
                 .formLogin(login ->
                         login.usernameParameter("username")
