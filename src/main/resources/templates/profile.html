@@ -12,19 +12,23 @@
 <div class="data-container">
     <div>
         <h2>Név:</h2>
-        <p th:text="${username}"></p>
+        <label for="username"><input id="username" type="text" th:value="${username}" disabled></label>
+<!--        <p th:text="${username}"></p>-->
     </div>
     <div>
         <h2>Email:</h2>
-        <p th:text="${email}"></p>
+        <label for="email"><input id="email" type="text" th:value="${email}" disabled></label>
+<!--        <p th:text="${email}"></p>-->
     </div>
     <div>
         <h2>Szerep:</h2>
-        <p th:text="${role}"></p>
+        <label for="role"><input id="role" type="text" th:value="${role}" disabled></label>
+<!--        <p th:text="${role}"></p>-->
     </div>
     <div>
         <h2>Megvásárolt tananyagok:</h2>
-        <p th:text="${purchases}"></p>
+        <label for="purchases"><input id="purchases" type="number" th:value="${purchases}" disabled></label>
+<!--        <p th:text="${purchases}"></p>-->
     </div>
 
     <form method="post" enctype="multipart/form-data" th:action="@{/edit/{id}(id=${id})}">
