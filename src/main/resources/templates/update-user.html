@@ -1,44 +1,41 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="/css/login.css" type="text/css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/update-user.css" type="text/css">
     <title>Registration</title>
 </head>
 <body>
 
 <h1 class="center">Felhasználó módosítása</h1>
 
-<form action="#"
-      th:action="@{/update/{id}(id=${user.id})}"
-      th:object="${user}"
-      method="post" class="center">
-    <label for="username">Név</label><br>
-    <input type="text" th:field="${user.username}" id="username" placeholder="Felhasználónév"><br>
-    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span><br>
+<div class="user-container">
+    <form th:action="@{/update/{id}(id=${user.id})}" th:object="${user}" method="post">
+        <label for="username">Név: <input type="text" th:field="${user.username}" id="username"
+                                          placeholder="Felhasználónév"> </label><br>
+        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span><br>
 
-    <label for="email">Email</label><br>
-    <input type="text" th:field="${user.email}" id="email" placeholder="Email"><br>
-    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span><br>
+        <label for="email">Email: <input type="text" th:field="${user.email}" id="email"
+                                         placeholder="Email"></label><br>
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span><br>
 
-    <input type="submit" value="Adatok módosítása"><br>
-</form>
+        <input type="submit" value="Adatok módosítása"><br>
+    </form>
+</div>
 
-<form action="#"
-      th:action="@{/update/password/{id}(id=${user.id})}"
-      th:object="${user}"
-      method="post" class="center">
-    <label for="oldPassword">Jelenlegi jelszó</label><br>
-    <input type="password" th:field="*{password}" id="oldPassword" placeholder="Old password"><br>
-    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span><br>
+<div class="password-container">
+    <form th:action="@{/update/password/{id}(id=${user.id})}" th:object="${user}" method="post">
+        <label for="oldPassword">Jelenlegi jelszó: <input type="password" th:field="*{password}" id="oldPassword"
+                                                          placeholder="Old password"> </label><br>
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span><br>
 
-    <label for="newPassword">Új jelszó</label><br>
-    <input type="password" th:field="*{newPassword}" id="newPassword" placeholder="New password"><br>
-    <span th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></span><br>
+        <label for="newPassword">Új jelszó: <input type="password" th:field="*{newPassword}" id="newPassword"
+                                                   placeholder="New password"></label><br>
+        <span th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></span><br>
 
-    <input type="submit" value="Jelszó módosítása">
-</form>
+        <input type="submit" value="Jelszó módosítása">
+    </form>
+</div>
 
 </body>
 </html>
