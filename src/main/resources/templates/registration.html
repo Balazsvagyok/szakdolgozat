@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <link rel="stylesheet" href="/css/login.css" type="text/css">
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/registration.css" type="text/css">
   <title>Registration</title>
 </head>
 <body>
@@ -13,21 +13,22 @@
   A felhasználónév már létezik.
 </div>
 
-<form action="#" th:action="@{/save}" th:object="${user}" method="post" id="login-container">
-  <label for="username">Felhasználónév:</label> <br>
-  <input type="text" id="username" th:field="*{username}" required/> <br>
+<div id="login-container">
+  <form th:action="@{/save}" th:object="${user}" method="post">
+    <label for="username">Felhasználónév: <input type="text" id="username" th:field="*{username}" required/> </label> <br>
 
-  <label for="email">Email:</label> <br>
-  <input type="email" id="email" th:field="*{email}" required/> <br>
+    <label for="email">Email: <input type="email" id="email" th:field="*{email}" required/> </label> <br>
 
-  <label for="password">Jelszó:</label> <br>
-  <input type="password" id="password" th:field="*{password}" required/> <br>
+    <label for="password">Jelszó: <input type="password" id="password" th:field="*{password}" required/>  </label> <br>
 
-  <input type="submit" value="Regisztráció">
-</form>
+    <input type="submit" value="Regisztráció">
+  </form>
+</div>
 
-<h3 class="center ctrl_btn"><a th:href="@{/login}">Bejelentkezés</a></h3>
-<h3 class="center ctrl_btn"><a th:href="@{/}">Vissza</a></h3>
+<div style="width: 20%; margin: auto">
+  <h3 class="center ctrl_btn left"><a th:href="@{/login}">Bejelentkezés</a></h3>
+  <h3 class="center ctrl_btn right"><a th:href="@{/}">Vissza</a></h3>
+</div>
 
 </body>
 </html>

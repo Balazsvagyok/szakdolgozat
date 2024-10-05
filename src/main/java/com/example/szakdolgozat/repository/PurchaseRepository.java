@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface PurchaseRepository extends JpaRepository<Purchase, Integer> {
     List<Purchase> findByUser(User user);
+
+    long countByUser(User user);
 }
 

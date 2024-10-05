@@ -1,6 +1,7 @@
 package com.example.szakdolgozat.controller;
 
 import com.example.szakdolgozat.model.User;
+import com.example.szakdolgozat.repository.PurchaseRepository;
 import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     @GetMapping
     public String homePage(Model model) {
@@ -79,10 +83,13 @@ public class UserController {
             String email = user.getEmail();
             String role = user.getRole();
             int id = user.getId();
+            long purchases = purchaseRepository.countByUser(user);
+
             model.addAttribute("username", username);
             model.addAttribute("email", email);
             model.addAttribute("role", role);
             model.addAttribute("id", id);
+            model.addAttribute("purchases", purchases);
 
             return "profile";
         }

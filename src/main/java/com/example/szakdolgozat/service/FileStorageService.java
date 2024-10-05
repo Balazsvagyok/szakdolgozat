@@ -53,4 +53,7 @@ public class FileStorageService {
         fileRepository.deleteById(String.valueOf(id));
     }
 
+    public long countPurchaseByUser(User user){
+        return countPurchaseByUser(user);
+    }
 }

@@ -2,26 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       lang="">
 <head>
-    <link rel="stylesheet" href="/css/index_css.css" type="text/css">
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/profile.css" type="text/css">
     <title>Profilom</title>
 </head>
 <body>
 
-<div class="center">
-    <h1 class="center">Adataim</h1>
-    <h2>Név:</h2>
-    <p th:text="${username}">Név</p>
-    <h2>Email:</h2>
-    <p th:text="${email}">Email</p>
-    <h2>Role:</h2>
-    <p th:text="${role}">Role</p>
+<h1 class="center">Adataim</h1>
+<div class="data-container">
+    <div>
+        <h2>Név:</h2>
+        <p th:text="${username}"></p>
+    </div>
+    <div>
+        <h2>Email:</h2>
+        <p th:text="${email}"></p>
+    </div>
+    <div>
+        <h2>Szerep:</h2>
+        <p th:text="${role}"></p>
+    </div>
+    <div>
+        <h2>Megvásárolt tananyagok:</h2>
+        <p th:text="${purchases}"></p>
+    </div>
 
     <form method="post" enctype="multipart/form-data" th:action="@{/edit/{id}(id=${id})}">
         <button type="submit">Módosítás</button>
     </form>
 
-<!--    <a th:href="@{/edit/{id}(id=${id})}">Módosítás</a>-->
+    <!--    <a th:href="@{/edit/{id}(id=${id})}">Módosítás</a>-->
 </div>
 
 </body>
