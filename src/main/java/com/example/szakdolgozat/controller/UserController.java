@@ -4,6 +4,7 @@ import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.PurchaseRepository;
 import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
+import com.example.szakdolgozat.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,9 @@ public class UserController {
 
     @Autowired
     private PurchaseRepository purchaseRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @GetMapping
     public String homePage(Model model) {
@@ -83,7 +87,7 @@ public class UserController {
             String email = user.getEmail();
             String role = user.getRole();
             int id = user.getId();
-            long purchases = purchaseRepository.countByUser(user);
+            long purchases = fileStorageService.countPurchaseByUser(user);
 
             model.addAttribute("username", username);
             model.addAttribute("email", email);

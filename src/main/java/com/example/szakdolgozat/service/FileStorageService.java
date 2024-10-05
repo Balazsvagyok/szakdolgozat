@@ -54,6 +54,6 @@ public class FileStorageService {
     }
 
     public long countPurchaseByUser(User user){
-        return countPurchaseByUser(user);
+        return purchaseRepository.countByUser(user);
     }
 }
