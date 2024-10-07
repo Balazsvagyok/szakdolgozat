@@ -1,11 +1,14 @@
 package com.example.szakdolgozat.controller;
 
 import com.example.szakdolgozat.model.User;
-import com.example.szakdolgozat.repository.PurchaseRepository;
 import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
+import jakarta.servlet.http.HttpSession;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,8 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 @RequestMapping
@@ -25,11 +26,13 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PurchaseRepository purchaseRepository;
+//    @Autowired
+//    private PurchaseRepository purchaseRepository;
 
     @Autowired
     private FileStorageService fileStorageService;
+
+//    Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping
     public String homePage(Model model) {
@@ -131,7 +134,7 @@ public class UserController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") int id, User user, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String updateUser(@PathVariable("id") int id, User user, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session) {
         if (result.hasErrors()) {
             user.setId(id);
             return "update-user";
@@ -142,29 +145,39 @@ public class UserController {
         User loggedInUser = userPrincipal.getUser();
 
         if (loggedInUser.getId().equals(id) || loggedInUser.getRole().equals("ADMIN")) {
-
             User existingUser = userRepository.findByUsername(user.getUsername());
-            if (existingUser.getUsername().equals(user.getUsername()) && existingUser.getId() != id){
-                redirectAttributes.addFlashAttribute("message", "A felhasználónév már létezik!");
+            if (existingUser != null && existingUser.getId() != id) {
+                result.rejectValue("username", "error.user", "A felhasználónév már létezik!");
+                return "update-user";
+            } else {
+                User userToUpdate = userRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("User not found!"));
+
+                userToUpdate.setUsername(user.getUsername());
+                userToUpdate.setEmail(user.getEmail());
+                userRepository.save(userToUpdate);
+
+                // Frissítsük a SecurityContext-et is a felhasználó új adataival
+                CustomUserDetails updatedUserDetails = new CustomUserDetails(userToUpdate);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(updatedUserDetails, authentication.getCredentials(), authentication.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                // Frissítsük a session-t is
+                session.setAttribute("loggedInUser", userToUpdate);
+                redirectAttributes.addFlashAttribute("message", "Felhasználó sikeresen frissítve!");
                 return "redirect:/";
             }
-
-            User userToUpdate = userRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("User not found!"));
-            userToUpdate.setUsername(user.getUsername());
-            userToUpdate.setEmail(user.getEmail());
-            userRepository.save(userToUpdate);
-
-            redirectAttributes.addFlashAttribute("message", "Felhasználó sikeresen frissítve!");
         } else {
             redirectAttributes.addFlashAttribute("message", "Csak a saját felhasználódat módosíthatod!");
+            return "redirect:/";
         }
-        return "redirect:/";
     }
 
 
+
     @PostMapping("/update/password/{id}")
-    public String updateUserPassword(@PathVariable("id") int id, User user, BindingResult result, RedirectAttributes redirectAttributes){
+    public String updateUserPassword(@PathVariable("id") int id, User user, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             user.setId(id);
             return "update-user";
@@ -191,7 +204,7 @@ public class UserController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") int id, Model model) {
+    public String deleteUser(@PathVariable("id") int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         userRepository.delete(user);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/update-user.css" type="text/css">
-    <title>Registration</title>
+    <title>Felhasznalo modositasa</title>
 </head>
 <body>
 
@@ -11,11 +11,11 @@
 
 <div class="user-container">
     <form th:action="@{/update/{id}(id=${user.id})}" th:object="${user}" method="post">
-        <label for="username">Név: <input type="text" th:field="${user.username}" id="username"
+        <label for="username">Név: <input type="text" th:field="*{username}" id="username"
                                           placeholder="Felhasználónév"> </label><br>
         <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span><br>
 
-        <label for="email">Email: <input type="text" th:field="${user.email}" id="email"
+        <label for="email">Email: <input type="text" th:field="*{email}" id="email"
                                          placeholder="Email"></label><br>
         <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span><br>
 
