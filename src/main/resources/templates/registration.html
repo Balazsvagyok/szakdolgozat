@@ -9,13 +9,14 @@
 
 <h1 class="center">Regisztráció</h1>
 
-<div th:if="${param.error}" class="error center">
+<div th:if="${error}" class="error center">
   A felhasználónév már létezik.
 </div>
 
 <div id="login-container">
   <form th:action="@{/save}" th:object="${user}" method="post">
     <label for="username">Felhasználónév: <input type="text" id="username" th:field="*{username}" required/> </label> <br>
+    <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span><br>
 
     <label for="email">Email: <input type="email" id="email" th:field="*{email}" required/> </label> <br>
 

@@ -110,19 +110,28 @@ public class UserController {
         return "registration";
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String saveUser(@ModelAttribute("user") User user) {
+    @PostMapping("/save")
+    public String saveUser(@ModelAttribute("user") User user, BindingResult result, RedirectAttributes redirectAttributes) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         try {
+            User existingUser = userRepository.findByUsername(user.getUsername());
+            if (existingUser != null) {
+                result.rejectValue("username", "error", "A felhasználónév már létezik!");
+                return "redirect:/registration";
+            }
+
             String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
             user.setRole("USER");
+            user.setNewPassword("");
             userRepository.save(user);
             return "redirect:/login";
         } catch (Exception ex) {
-            return "redirect:/registration?error=username_already_exists";
+            redirectAttributes.addFlashAttribute("error", "Valami hiba történt a mentés során.");
+            return "redirect:/registration";
         }
     }
+
 
     @PostMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
@@ -157,13 +166,13 @@ public class UserController {
                 userToUpdate.setEmail(user.getEmail());
                 userRepository.save(userToUpdate);
 
-                // Frissítsük a SecurityContext-et is a felhasználó új adataival
+                // SecurityContext frissítése az új adatokkal
                 CustomUserDetails updatedUserDetails = new CustomUserDetails(userToUpdate);
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(updatedUserDetails, authentication.getCredentials(), authentication.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                // Frissítsük a session-t is
+                // Session frissítés
                 session.setAttribute("loggedInUser", userToUpdate);
                 redirectAttributes.addFlashAttribute("message", "Felhasználó sikeresen frissítve!");
                 return "redirect:/";
@@ -173,7 +182,6 @@ public class UserController {
             return "redirect:/";
         }
     }
-
 
 
     @PostMapping("/update/password/{id}")
@@ -187,11 +195,14 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        // Jelenlegi jelszó egyezés
         if (!bCryptPasswordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
             result.rejectValue("password", "error.user", "A megadott jelszó nem egyezik a jelenlegi jelszóval!");
             return "update-user";
         }
 
+        //
         if (user.getNewPassword().length() < 4) {
             result.rejectValue("newPassword", "error.user", "A megadott új jelszó hosszabb kell legyen, mint 3 karakter!");
             return "update-user";
