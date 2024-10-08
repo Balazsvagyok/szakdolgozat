@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/profile.css" type="text/css">
     <title>Profilom</title>
 </head>
+
 <body>
 
 <h1 class="center">Adataim</h1>
@@ -13,29 +14,23 @@
     <div>
         <h2>Név:</h2>
         <label for="username"><input id="username" type="text" th:value="${username}" disabled></label>
-<!--        <p th:text="${username}"></p>-->
     </div>
     <div>
         <h2>Email:</h2>
         <label for="email"><input id="email" type="text" th:value="${email}" disabled></label>
-<!--        <p th:text="${email}"></p>-->
     </div>
     <div>
         <h2>Szerep:</h2>
         <label for="role"><input id="role" type="text" th:value="${role}" disabled></label>
-<!--        <p th:text="${role}"></p>-->
     </div>
     <div>
         <h2>Megvásárolt tananyagok:</h2>
         <label for="purchases"><input id="purchases" type="number" th:value="${purchases}" disabled></label>
-<!--        <p th:text="${purchases}"></p>-->
     </div>
 
     <form method="post" enctype="multipart/form-data" th:action="@{/edit/{id}(id=${id})}">
         <button type="submit">Módosítás</button>
     </form>
-
-    <!--    <a th:href="@{/edit/{id}(id=${id})}">Módosítás</a>-->
 </div>
 
 </body>

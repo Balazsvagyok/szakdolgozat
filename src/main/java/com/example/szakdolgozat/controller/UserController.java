@@ -5,8 +5,6 @@ import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
 import jakarta.servlet.http.HttpSession;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,51 +24,37 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-//    @Autowired
-//    private PurchaseRepository purchaseRepository;
-
     @Autowired
     private FileStorageService fileStorageService;
 
-//    Logger logger = LoggerFactory.getLogger(UserController.class);
+    private String getLoggedInUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+    private boolean isAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+    }
 
     @GetMapping
-    public String homePage(Model model) {
-        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
-        String name = loggedInUser.getName();
+    public String showHomePage(Model model) {
+        String username = getLoggedInUsername();
 
-        User user = userRepository.findByUsername(name);
+        User user = userRepository.findByUsername(username);
         if (user != null) {
             String role = user.getRole();
             int id = user.getId();
-//          System.out.println(role);
             model.addAttribute("role", role);
             model.addAttribute("id", id);
         }
         return "index";
     }
 
-//    @GetMapping("")
-//    public String viewHomePage() {
-////        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-////        String name = auth.getName();
-////
-////        User user = userRepository.findByUsername(name);
-////        String role = user.getRole();
-////        System.out.println(role);
-//
-//        return "index";
-//    }
-
-//    @GetMapping(path = "/all")
-//    public @ResponseBody Iterable<User> getAllUsers() {
-//        return userRepository.findAll();
-//    }
-
     @GetMapping("/users")
     public String showAllUsers(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+        if (isAdmin()) {
             Iterable<User> userList = userRepository.findAll();
             model.addAttribute("users", userList);
             return "users";
@@ -80,13 +64,11 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String userProfile(Model model) {
-        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
-        String name = loggedInUser.getName();
+    public String showUserProfile(Model model) {
+        String username = getLoggedInUsername();
 
-        User user = userRepository.findByUsername(name);
+        User user = userRepository.findByUsername(username);
         if (user != null) {
-            String username = user.getUsername();
             String email = user.getEmail();
             String role = user.getRole();
             int id = user.getId();
@@ -105,13 +87,13 @@ public class UserController {
     }
 
     @GetMapping("/registration")
-    public String add(Model model) {
+    public String showRegistrationPage(Model model) {
         model.addAttribute("user", new User());
         return "registration";
     }
 
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") User user, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String registerNewProfile(@ModelAttribute("user") User user, BindingResult result, RedirectAttributes redirectAttributes) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         try {
             User existingUser = userRepository.findByUsername(user.getUsername());
@@ -127,7 +109,7 @@ public class UserController {
             userRepository.save(user);
             return "redirect:/login";
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("error", "Valami hiba történt a mentés során.");
+            redirectAttributes.addFlashAttribute("error", "Hiba történt a mentés során.");
             return "redirect:/registration";
         }
     }
@@ -202,7 +184,7 @@ public class UserController {
             return "update-user";
         }
 
-        //
+        // Új jelszó min kritérium
         if (user.getNewPassword().length() < 4) {
             result.rejectValue("newPassword", "error.user", "A megadott új jelszó hosszabb kell legyen, mint 3 karakter!");
             return "update-user";

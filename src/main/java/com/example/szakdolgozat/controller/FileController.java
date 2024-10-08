@@ -6,7 +6,6 @@ import com.example.szakdolgozat.model.Purchase;
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.FileRepository;
 import com.example.szakdolgozat.repository.PurchaseRepository;
-import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
 import com.example.szakdolgozat.service.VideoService;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,47 +36,25 @@ public class FileController {
     @Autowired
     private VideoService videoService;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private FileRepository fileRepository;
     @Autowired
     private PurchaseRepository purchaseRepository;
 
     private static final String UPLOAD_DIR = "uploads/";
 
-
-    public void listVideos(Model model, RedirectAttributes redirectAttributes) {
-        try {
-            Iterable<String> videos = videoService.listAllVideos();
-            model.addAttribute("videos", videos);
-        } catch (IOException e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("message", "Error reading video files");
-        }
+    private User getLoggedInUser(Authentication authentication) {
+        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+        return userPrincipal.getUser();
     }
 
-    @PostMapping("/upload/video")
-    public String uploadVideo(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-        try {
-            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-            Files.createDirectories(path.getParent());
-            Files.write(path, file.getBytes());
-            redirectAttributes.addFlashAttribute("message", "File uploaded successfully: " + file.getOriginalFilename());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Failed to upload file: " + e.getMessage());
-        }
-        return "redirect:/files";
+    // Collection to String
+    private String getUserRole(Authentication authentication) {
+        return authentication.getAuthorities().stream().map(Object::toString)
+                .collect(Collectors.joining(","));
     }
 
-
-    // Megvásárolható fájlok listázása az alábbi úton
-    @GetMapping("/files")
-    public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
-        // Bejelentkezett felhasználó lekérése és szerep meghatározása, Collection -> String
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String role = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(","));
-
-        List<ResponseFile> files = storageService.getAllFiles().map(file -> {
+    private List<ResponseFile> getResponseFiles() {
+        return storageService.getAllFiles().map(file -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/files/")
@@ -95,11 +71,62 @@ public class FileController {
                     file.getPrice(),
                     file.getUploader());
         }).collect(Collectors.toList());
+    }
 
-        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
-        User loggedInUser = userPrincipal.getUser();
+    private List<ResponseFile> getPurchasedFiles(User user) {
+        return storageService.getPurchasedFiles(user).stream().map(file -> {
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(String.valueOf(file.getId()))
+                    .toUriString();
 
+            return new ResponseFile(
+                    file.getId(),
+                    file.getName(),
+                    fileDownloadUri,
+                    file.getType(),
+                    file.getData().length,
+                    file.getDescription(),
+                    file.getPrice(),
+                    file.getUploader());
+        }).collect(Collectors.toList());
+    }
+
+    public void listVideos(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Iterable<String> videos = videoService.listAllVideos();
+            model.addAttribute("videos", videos);
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "Hiba a videófájlok beolvasása közben!");
+        }
+    }
+
+    @PostMapping("/upload/video")
+    public String uploadVideo(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+        try {
+            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+            Files.createDirectories(path.getParent());
+            Files.write(path, file.getBytes());
+            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikeres: " + file.getOriginalFilename());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikertelen: " + e.getMessage());
+        }
+        return "redirect:/files";
+    }
+
+
+    // Megvásárolható fájlok listázása az alábbi úton
+    @GetMapping("/files")
+    public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = getLoggedInUser(authentication);
+        String role = getUserRole(authentication);
+
+        List<ResponseFile> files = getResponseFiles();
         listVideos(model, redirectAttributes);
+
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
         model.addAttribute("role", role);
@@ -110,30 +137,12 @@ public class FileController {
     @GetMapping("/purchases")
     public String getListPurchases(Model model, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String role = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(","));
+        User loggedInUser = getLoggedInUser(authentication);
+        String role = getUserRole(authentication);
 
-        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
-        User loggedInUser = userPrincipal.getUser();
-
-        List<ResponseFile> files = storageService.getPurchasedFiles(loggedInUser).stream().map(file -> {
-            String fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(String.valueOf(file.getId()))
-                    .toUriString();
-
-            return new ResponseFile(
-                    file.getId(),
-                    file.getName(),
-                    fileDownloadUri,
-                    file.getType(),
-                    file.getData().length,
-                    file.getDescription(),
-                    file.getPrice(),
-                    file.getUploader());
-        }).collect(Collectors.toList());
-
+        List<ResponseFile> files = getPurchasedFiles(loggedInUser);
         listVideos(model, redirectAttributes);
+
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
         model.addAttribute("role", role);
@@ -144,23 +153,20 @@ public class FileController {
     @PostMapping("/purchase/{fileId}")
     public String purchaseFile(@PathVariable Integer fileId, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
-        User loggedInUser = userPrincipal.getUser();
+        User loggedInUser = getLoggedInUser(authentication);
 
         File file = fileRepository.findById(String.valueOf(fileId))
-                .orElseThrow(() -> new RuntimeException("File not found!"));
+                .orElseThrow(() -> new RuntimeException("Fájl nem található!"));
 
         Purchase purchase = new Purchase();
         purchase.setUser(loggedInUser);
         purchase.setFile(file);
         purchase.setPurchaseDate(new Date(System.currentTimeMillis()));
-
         purchaseRepository.save(purchase);
 
         redirectAttributes.addFlashAttribute("message", "Fájl sikeresen megvásárolva!");
         return "redirect:/files";
     }
-
 
 
     @PostMapping("/upload")
@@ -169,24 +175,35 @@ public class FileController {
         String message;
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = userRepository.findByUsername(userDetails.getUsername());
+            User loggedInUser = getLoggedInUser(authentication);
 
-            File newFile = new File();
-            newFile.setName(file.getOriginalFilename());
-            newFile.setType(file.getContentType());
-            newFile.setDescription(description);
-            newFile.setPrice(price);
-            newFile.setData(file.getBytes());
-            newFile.setUploader(user);
-
-            storageService.saveFile(newFile);
-            message = "Sikeres fájl feltöltés: " + file.getOriginalFilename();
+            if (isFileExists(file.getOriginalFilename())) {
+                message = "Fájl feltöltése sikertelen: A fájl már létezik: " + file.getOriginalFilename() + "!";
+            } else {
+                File newFile = createNewFile(file, description, price, loggedInUser);
+                storageService.saveFile(newFile);
+                message = "Sikeres fájl feltöltés: " + file.getOriginalFilename();
+            }
         } catch (Exception e) {
-            message = "Fájl feltöltése sikertelen: " + file.getOriginalFilename() + "!";
+            message = "Fájl feltöltése sikertelen: " + file.getOriginalFilename() + "! Hiba: " + e.getMessage();
         }
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/files";
+    }
+
+    private boolean isFileExists(String fileName) {
+        return fileRepository.findByName(fileName).isPresent();
+    }
+
+    private File createNewFile(MultipartFile file, String description, Double price, User uploader) throws IOException {
+        File newFile = new File();
+        newFile.setName(file.getOriginalFilename());
+        newFile.setType(file.getContentType());
+        newFile.setDescription(description);
+        newFile.setPrice(price);
+        newFile.setData(file.getBytes());
+        newFile.setUploader(uploader);
+        return newFile;
     }
 
 
@@ -224,6 +241,7 @@ public class FileController {
     }
 
 
+    // Ha valaki megvásárolta, akkor nem lehet törölni (javítani)
     @PostMapping("/files/{id}")
     public String deleteFile(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
