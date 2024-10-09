@@ -22,9 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,14 +30,15 @@ import java.util.stream.Collectors;
 public class FileController {
     @Autowired
     private FileStorageService storageService;
-    @Autowired
-    private VideoService videoService;
+
+    // @Autowired
+    // private VideoService videoService;
     @Autowired
     private FileRepository fileRepository;
     @Autowired
     private PurchaseRepository purchaseRepository;
 
-    private static final String UPLOAD_DIR = "uploads/";
+    // private static final String UPLOAD_DIR = "uploads/";
 
     private User getLoggedInUser(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
@@ -69,7 +67,8 @@ public class FileController {
                     file.getData().length,
                     file.getDescription(),
                     file.getPrice(),
-                    file.getUploader());
+                    file.getUploader(),
+                    file.isDeleted());
         }).collect(Collectors.toList());
     }
 
@@ -89,35 +88,36 @@ public class FileController {
                     file.getData().length,
                     file.getDescription(),
                     file.getPrice(),
-                    file.getUploader());
+                    file.getUploader(),
+                    file.isDeleted());
         }).collect(Collectors.toList());
     }
 
-    public void listVideos(Model model, RedirectAttributes redirectAttributes) {
-        try {
-            Iterable<String> videos = videoService.listAllVideos();
-            model.addAttribute("videos", videos);
-        } catch (IOException e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("message", "Hiba a videófájlok beolvasása közben!");
-        }
-    }
+//    public void listVideos(Model model, RedirectAttributes redirectAttributes) {
+//        try {
+//            Iterable<String> videos = videoService.listAllVideos();
+//            model.addAttribute("videos", videos);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            redirectAttributes.addFlashAttribute("message", "Hiba a videófájlok beolvasása közben!");
+//        }
+//    }
 
-    @PostMapping("/upload/video")
-    public String uploadVideo(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-        try {
-            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-            Files.createDirectories(path.getParent());
-            Files.write(path, file.getBytes());
-            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikeres: " + file.getOriginalFilename());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikertelen: " + e.getMessage());
-        }
-        return "redirect:/files";
-    }
+//    @PostMapping("/upload/video")
+//    public String uploadVideo(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+//        try {
+//            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+//            Files.createDirectories(path.getParent());
+//            Files.write(path, file.getBytes());
+//            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikeres: " + file.getOriginalFilename());
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikertelen: " + e.getMessage());
+//        }
+//        return "redirect:/files";
+//    }
 
 
-    // Megvásárolható fájlok listázása az alábbi úton
+    // Megvásárolható fájlok listázása
     @GetMapping("/files")
     public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -125,7 +125,7 @@ public class FileController {
         String role = getUserRole(authentication);
 
         List<ResponseFile> files = getResponseFiles();
-        listVideos(model, redirectAttributes);
+        // listVideos(model, redirectAttributes);
 
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
@@ -133,7 +133,7 @@ public class FileController {
         return "files";
     }
 
-    // Megvásárolt fájlok listázása az alábbi úton
+    // Megvásárolt fájlok listázása
     @GetMapping("/purchases")
     public String getListPurchases(Model model, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -141,7 +141,7 @@ public class FileController {
         String role = getUserRole(authentication);
 
         List<ResponseFile> files = getPurchasedFiles(loggedInUser);
-        listVideos(model, redirectAttributes);
+        // listVideos(model, redirectAttributes);
 
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
@@ -174,16 +174,19 @@ public class FileController {
                              @RequestParam("price") Double price, RedirectAttributes redirectAttributes) {
         String message;
         try {
+            if (isFileExists(file.getOriginalFilename())) {
+                message = "Fájl feltöltése sikertelen: Már létezik fájl ugyan azzal a névvel!";
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/files";
+            }
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User loggedInUser = getLoggedInUser(authentication);
 
-            if (isFileExists(file.getOriginalFilename())) {
-                message = "Fájl feltöltése sikertelen: A fájl már létezik: " + file.getOriginalFilename() + "!";
-            } else {
-                File newFile = createNewFile(file, description, price, loggedInUser);
-                storageService.saveFile(newFile);
-                message = "Sikeres fájl feltöltés: " + file.getOriginalFilename();
-            }
+            File newFile = createNewFile(file, description, price, loggedInUser);
+            storageService.saveFile(newFile);
+            message = "Sikeres fájl feltöltés: " + file.getOriginalFilename();
+
         } catch (Exception e) {
             message = "Fájl feltöltése sikertelen: " + file.getOriginalFilename() + "! Hiba: " + e.getMessage();
         }
@@ -192,7 +195,7 @@ public class FileController {
     }
 
     private boolean isFileExists(String fileName) {
-        return fileRepository.findByName(fileName).isPresent();
+        return fileRepository.findByNameAndDeletedFalse(fileName).isPresent();
     }
 
     private File createNewFile(MultipartFile file, String description, Double price, User uploader) throws IOException {
@@ -245,7 +248,11 @@ public class FileController {
     @PostMapping("/files/{id}")
     public String deleteFile(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            storageService.deleteFile(id);
+            File file = fileRepository.findById(String.valueOf(id))
+                    .orElseThrow(() -> new RuntimeException("Fájl nem található"));
+            file.setDeleted(true);
+            fileRepository.save(file);
+
             redirectAttributes.addFlashAttribute("message", "Fájl sikeresen törölve lett!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Fájl törlése sikertelen volt!");

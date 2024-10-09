@@ -46,7 +46,7 @@ public class FileStorageService {
     }
 
     public Stream<File> getAllFiles() {
-        return fileRepository.findAll().stream();
+        return fileRepository.findAllByDeletedFalse().stream();
     }
 
     public void deleteFile(Long id) {

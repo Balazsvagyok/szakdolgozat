@@ -12,8 +12,9 @@ public class ResponseFile {
     private String description;
     private Double price;
     private User uploader;
+    private boolean deleted;
 
-    public ResponseFile(int id, String name, String url, String type, long size, String description, Double price, User uploader) {
+    public ResponseFile(int id, String name, String url, String type, long size, String description, Double price, User uploader, boolean deleted) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -22,6 +23,7 @@ public class ResponseFile {
         this.description = description;
         this.price = price;
         this.uploader = uploader;
+        this.deleted = deleted;
     }
 
     public int getId() {
@@ -86,5 +88,13 @@ public class ResponseFile {
 
     public void setUploader(User uploader) {
         this.uploader = uploader;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

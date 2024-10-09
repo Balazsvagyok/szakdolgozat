@@ -17,6 +17,7 @@ public class File {
     private Double price;
     @ManyToOne
     private User uploader;
+    private boolean deleted = false;
 
     public File(){
 
@@ -82,5 +83,13 @@ public class File {
 
     public void setUploader(User uploaderId) {
         this.uploader = uploaderId;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

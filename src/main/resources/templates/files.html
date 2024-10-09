@@ -21,7 +21,7 @@
     </div>
     <div>
         <label for="price">Ár:</label><br>
-        <input type="text" id="price" name="price">
+        <input type="text" id="price" name="price" required>
     </div>
     <div>
         <button type="submit">Feltöltés</button>
@@ -73,27 +73,27 @@
         </tbody>
     </table>
 
-    <h1>Feltöltött videók</h1>
-    <table class="table center">
-        <thead>
-        <tr>
-            <th>Név</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="video : ${videos}">
-            <td><a th:href="@{'/videos/play/' + ${video}}" th:text="${video}">Videó</a></td>
-        </tr>
-        </tbody>
-    </table>
+<!--    <h1>Feltöltött videók</h1>-->
+<!--    <table class="table center">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>Név</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="video : ${videos}">-->
+<!--            <td><a th:href="@{'/videos/play/' + ${video}}" th:text="${video}">Videó</a></td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
 
-    <div th:if="${role} == 'ADMIN'">
-        <h1>Videó feltöltése</h1>
-        <form method="post" enctype="multipart/form-data" th:action="@{/upload/video}">
-            <input type="file" name="file" accept="video/*" required>
-            <button type="submit">Upload</button>
-        </form>
-    </div>
+<!--    <div th:if="${role} == 'ADMIN'">-->
+<!--        <h1>Videó feltöltése</h1>-->
+<!--        <form method="post" enctype="multipart/form-data" th:action="@{/upload/video}">-->
+<!--            <input type="file" name="file" accept="video/*" required>-->
+<!--            <button type="submit">Upload</button>-->
+<!--        </form>-->
+<!--    </div>-->
 
     <!--    <h1>Play Video</h1>-->
     <!--    <video width="320" height="240" controls>-->
