@@ -8,7 +8,6 @@ import com.example.szakdolgozat.repository.FileRepository;
 import com.example.szakdolgozat.repository.PurchaseRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
-import com.example.szakdolgozat.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -210,7 +209,7 @@ public class FileController {
     }
 
 
-    @GetMapping("/files/edit/{id}")
+    @PostMapping("/files/edit/{id}")
     public String editFileForm(@PathVariable Long id, Model model) {
         File file = storageService.getFile(String.valueOf(id));
         model.addAttribute("file", file);

@@ -8,16 +8,20 @@
 </head>
 <body>
 
-<div class="header">
+<nav class="header">
     <h1>Education</h1>
-    <p id="logged-in" sec:authorize="isAuthenticated()">Bejelentkezve, mint&nbsp;<b><span
-            sec:authentication="principal.username"></span></b></p>
+
+    <p id="logged-in" sec:authorize="isAuthenticated()">Bejelentkezve, mint&nbsp;<span style="font-weight: bold"
+            sec:authentication="principal.username"></span></p>
+
     <div class="nav-links">
         <a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a>
         <a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
+
         <div class="dropdown">
             <a class="drop-link nav-link" sec:authorize="isAuthenticated()" th:href="@{/profile}"
                id="profile">Profilom</a>
+
             <div class="dropdown-content">
                 <a th:if="${role} == 'ADMIN'" th:href="@{/files}">Feltöltött tananyagok</a>
                 <a th:if="${role} == 'ADMIN'" href="#">Tananyag feltöltése</a>
@@ -25,9 +29,9 @@
                 <form method="post" th:action="@{/edit/{id}(id=${id})}">
                     <button type="submit">Profil módosítása</button>
                 </form>
-                <!--            <a th:href="@{/edit/{id}(id=${id})}">Profil módosítása</a>-->
             </div>
         </div>
+
         <a class="nav-link" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/files}"
            id="fajlok">Fájlok</a>
         <a class="nav-link" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}"
@@ -38,8 +42,8 @@
             <input hidden type="submit" value="Kijelentkezés"/>
         </form>
     </div>
-</div>
 
+</nav>
 
 <div class="center" th:if="${message}">
     <p th:text="${message}"></p>
@@ -57,7 +61,6 @@
         <a th:href="@{/files}" id="tananyagok">Tananyagok</a>
     </div>
 </div>
-
 
 </body>
 </html>
