@@ -33,7 +33,7 @@
         </div>
 
         <a class="nav-link" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/files}"
-           id="fajlok">Fájlok</a>
+           id="fajlok">Tananyagok</a>
         <a class="nav-link" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}"
            id="felhasznalok">Felhasználók</a>
         <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem"

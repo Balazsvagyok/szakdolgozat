@@ -57,6 +57,7 @@ h1 {
 .dropdown {
     float: left;
     overflow: hidden;
+    margin-right: 5px;
 }
 
 .dropdown-content {
