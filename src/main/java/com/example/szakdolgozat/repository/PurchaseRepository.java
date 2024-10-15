@@ -12,5 +12,6 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Integer> {
     List<Purchase> findByUser(User user);
     long countByUser(User user);
     Optional<Purchase> findByUserAndFile(User user, File file);
+    boolean existsByUserAndFile(User user, File file);
 }
 

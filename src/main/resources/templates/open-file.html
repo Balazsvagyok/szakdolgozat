@@ -28,6 +28,29 @@
             <p id="price" th:text="*{price}"></p>
         </div>
     </div>
+
+    <div class="center error" th:if="${message}">
+        <p th:text="${message}"></p>
+    </div>
+
+    <h3>Értékelések</h3>
+    <ul>
+        <li th:each="rating : ${ratings}">
+            <strong th:text="${rating.user.username}">Felhasználónév</strong>:
+            <span th:text="${rating.score}">Pontszám</span>
+            <p th:if="${rating.comment}" th:text="${rating.comment}">Komment</p>
+        </li>
+    </ul>
+
+    <h3>Értékelés leadása</h3>
+    <form th:action="@{/ratings/rate}" method="post">
+        <input type="hidden" name="fileId" th:value="${file.id}">
+        <label for="score">Pontszám:</label>
+        <input type="number" id="score" name="score" min="1" max="5" required>
+        <label for="comment">Megjegyzés:</label>
+        <textarea id="comment" name="comment" maxlength="250"></textarea>
+        <button type="submit">Értékelés beküldése</button>
+    </form>
 </main>
 
 </body>

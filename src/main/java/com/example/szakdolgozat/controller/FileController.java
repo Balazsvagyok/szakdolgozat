@@ -3,9 +3,11 @@ package com.example.szakdolgozat.controller;
 import com.example.szakdolgozat.message.ResponseFile;
 import com.example.szakdolgozat.model.File;
 import com.example.szakdolgozat.model.Purchase;
+import com.example.szakdolgozat.model.Rating;
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.FileRepository;
 import com.example.szakdolgozat.repository.PurchaseRepository;
+import com.example.szakdolgozat.repository.RatingRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +39,8 @@ public class FileController {
     private FileRepository fileRepository;
     @Autowired
     private PurchaseRepository purchaseRepository;
+    @Autowired
+    private RatingRepository ratingRepository;
 
     // private static final String UPLOAD_DIR = "uploads/";
 
@@ -270,7 +274,9 @@ public class FileController {
     @GetMapping("/files/{id}")
     public String getFile(@PathVariable String id, Model model) {
         File file = storageService.getFile(id);
+        List<Rating> ratings = ratingRepository.findByFile(file);
         model.addAttribute("file", file);
+        model.addAttribute("ratings", ratings);
 
         return "open-file";
     }
