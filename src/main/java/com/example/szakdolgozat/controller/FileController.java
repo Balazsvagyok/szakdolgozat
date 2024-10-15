@@ -8,6 +8,7 @@ import com.example.szakdolgozat.repository.FileRepository;
 import com.example.szakdolgozat.repository.PurchaseRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -157,6 +160,13 @@ public class FileController {
         File file = fileRepository.findById(String.valueOf(fileId))
                 .orElseThrow(() -> new RuntimeException("Fájl nem található!"));
 
+        boolean alreadyPurchased = purchaseRepository.findByUserAndFile(loggedInUser, file).isPresent();
+
+        if (alreadyPurchased) {
+            redirectAttributes.addFlashAttribute("message", "Ezt a fájlt már megvásároltad!");
+            return "redirect:/files";
+        }
+
         Purchase purchase = new Purchase();
         purchase.setUser(loggedInUser);
         purchase.setFile(file);
@@ -232,6 +242,32 @@ public class FileController {
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/files";
     }
+
+    @GetMapping("/download/{fileId}")
+    public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) throws IOException {
+
+        File dbFile = fileRepository.findById(String.valueOf(fileId))
+                .orElseThrow(() -> new RuntimeException("Fájl nem található!"));
+
+        // Fájl MIME típusának meghatározása
+        String mimeType = URLConnection.guessContentTypeFromName(dbFile.getName());
+
+        if (mimeType == null) {
+            mimeType = "application/octet-stream";
+        }
+
+        response.setContentType(mimeType);
+        response.setHeader("Content-Disposition", "inline; filename=\"" + dbFile.getName() + "\"");
+        response.setContentLength(dbFile.getData().length);
+
+        // Fájl adatainak írása a kimenetre
+        try (OutputStream os = response.getOutputStream()) {
+            os.write(dbFile.getData(), 0, dbFile.getData().length);
+        }
+    }
+
+
+
 
     @GetMapping("/files/{id}")
     public ResponseEntity<byte[]> getFile(@PathVariable String id) {

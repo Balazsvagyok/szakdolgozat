@@ -44,22 +44,19 @@
             <p th:text="'Feltöltő: ' + ${file.uploader.username}"></p>
         </div>
         <div class="edit">
-            <form th:if="${file.uploader.id} == ${user.getId()}" th:action="@{/files/edit/{id}(id=${file.id})}" method="post">
+            <form th:if="${file.uploader.id} == ${user.id}" th:action="@{/files/edit/{id}(id=${file.id})}" method="post">
                 <button>Szerkesztés</button>
             </form>
             <form th:if="${file.uploader.id} == ${user.id}" th:action="@{'/files/' + ${file.id}}" onclick="confirmDelete()" method="post">
                 <input type="hidden" name="_method" value="delete"/>
                 <button type="submit">Törlés</button>
             </form>
+            <form th:if="${file.uploader.id} != ${user.id}" th:action="@{'/purchase/' + ${file.id}}" method="post">
+                <button type="submit">Vásárlás</button>
+            </form>
         </div>
     </div>
 </div>
-
-<script>
-    function confirmDelete() {
-        return confirm("Biztosan törölni szeretnéd ezt a felhasználót?");
-    }
-</script>
 
 <!--<div class="center">-->
 <!--    <h1 class="center" th:if="${role} == 'ADMIN'">Feltöltött fájlok</h1>-->

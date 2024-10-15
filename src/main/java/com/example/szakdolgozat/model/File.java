@@ -10,6 +10,7 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Lob
+    @Column(name = "data", nullable = false, columnDefinition = "mediumblob")
     private byte[] data;
     private String name;
     private String description;

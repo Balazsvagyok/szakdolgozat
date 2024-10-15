@@ -148,14 +148,17 @@ public class UserController {
                 userToUpdate.setEmail(user.getEmail());
                 userRepository.save(userToUpdate);
 
-                // SecurityContext frissítése az új adatokkal
-                CustomUserDetails updatedUserDetails = new CustomUserDetails(userToUpdate);
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(updatedUserDetails, authentication.getCredentials(), authentication.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if (loggedInUser.getId().equals(id)) {
+                    // SecurityContext frissítése az új adatokkal
+                    CustomUserDetails updatedUserDetails = new CustomUserDetails(userToUpdate);
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(updatedUserDetails, authentication.getCredentials(), authentication.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                // Session frissítés
-                session.setAttribute("loggedInUser", userToUpdate);
+                    // Session frissítés
+                    session.setAttribute("loggedInUser", userToUpdate);
+                }
+
                 redirectAttributes.addFlashAttribute("message", "Felhasználó sikeresen frissítve!");
                 return "redirect:/";
             }
