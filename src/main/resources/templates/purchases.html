@@ -11,24 +11,29 @@
 
 <div class="container">
     <div class="card" th:each="file : ${files}">
-        <div class="files-container">
-            <h4 style="text-align: center" th:text="${file.name}"></h4>
-            <h3 th:text="${file.price} + 'Ft'"></h3>
-            <p th:text="'Leírás: ' + ${file.description}"></p>
-            <p th:text="'Feltöltő: ' + ${file.uploader.username}"></p>
-        </div>
-        <div class="edit">
-            <form th:if="${file.uploader.id} == ${user.getId()}" th:action="@{/files/edit/{id}(id=${file.id})}" method="post">
-                <button>Szerkesztés</button>
-            </form>
-            <form th:if="${file.uploader.id} == ${user.id}" th:action="@{'/files/' + ${file.id}}" onclick="confirmDelete()" method="post">
-                <input type="hidden" name="_method" value="delete"/>
-                <button type="submit">Törlés</button>
-            </form>
-            <form th:action="@{'/download/' + ${file.id}}" method="get">
-                <button type="submit">Megtekintés</button>
-            </form>
-        </div>
+        <a id="card-link" th:href="@{/files/{id}(id=${file.id})}">
+            <div class="files-container">
+                <h4 style="text-align: center" th:text="${file.name}"></h4>
+                <h3 th:text="${file.price} + 'Ft'"></h3>
+                <p th:text="'Leírás: ' + ${file.description}"
+                   style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"></p>
+                <p th:text="'Feltöltő: ' + ${file.uploader.username}"></p>
+            </div>
+            <div class="edit">
+                <form th:if="${file.uploader.id} == ${user.getId()}" th:action="@{/files/edit/{id}(id=${file.id})}"
+                      method="post">
+                    <button>Szerkesztés</button>
+                </form>
+                <form th:if="${file.uploader.id} == ${user.id}" th:action="@{'/files/' + ${file.id}}"
+                      onclick="confirmDelete()" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit">Törlés</button>
+                </form>
+                <form th:action="@{'/download/' + ${file.id}}" method="get">
+                    <button type="submit">Megtekintés</button>
+                </form>
+            </div>
+        </a>
     </div>
 </div>
 

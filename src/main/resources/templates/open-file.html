@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <title th:text="${file.getName()}"></title>
+</head>
+<body>
+
+<main>
+    <h1 class="center">Tananyag leírása</h1>
+    <div class="center" th:object="${file}">
+        <div>
+            <p>Fájl neve:</p>
+            <p id="name" th:text="*{name}"></p>
+        </div>
+        <div>
+            <p>Fájl típusa:</p>
+            <p id="type" th:text="*{type}"></p>
+        </div>
+        <div>
+            <p>Leírás:</p>
+            <p id="description" th:text="*{description}"></p>
+        </div>
+        <div>
+            <p>Ár:</p>
+            <p id="price" th:text="*{price}"></p>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

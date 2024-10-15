@@ -28,14 +28,19 @@ body {
     align-content: center;
 }
 
-a {
+#card-link {
+    text-decoration: none;
+    color: black;
+}
+
+a:not(#card-link){
     text-decoration: none;
     color: black;
     padding: 10px;
     transition: 0.2s;
 }
 
-a:hover {
+a:hover:not(#card-link) {
     text-decoration: none;
     color: black;
     padding: 10px;
@@ -49,16 +54,34 @@ a:hover {
     justify-content: center;
     text-align: left;
     top: 0;
+    padding: 5px;
+}
+
+.file-upload > div {
+    padding: 5px;
+}
+
+textarea, #price {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+#price {
+    height: 30px;
+    width: 100%;
+    text-align: center;
 }
 
 .file-upload button[type="submit"] {
-    margin-top: 20px;
     width: 100%;
     height: 40px;
     background-color: black;
     color: white;
     border-radius: 5px;
     font-size: 18px;
+    cursor: pointer;
 }
 
 .container {

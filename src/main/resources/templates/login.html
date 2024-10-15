@@ -7,24 +7,27 @@
 </head>
 <body>
 
-<h1 class="center">Bejelentkezés</h1>
+<main>
+    <h1 class="center">Bejelentkezés</h1>
+    <div th:if="${param.error}" class="error center">
+        Sikertelen bejelentkezés.
+    </div>
 
-<div id="login-container">
-    <form th:action="@{/login}" method="post">
-        <label>Felhasználónév: <input type="text" name="username"/> </label><br>
-        <label>Jelszó: <input type="password" name="password"/> </label><br>
-        <div th:if="${param.error}" class="error center">
-            Sikertelen bejelentkezés.
-        </div>
-        <br>
-        <div><input type="submit" value="Bejelentkezés"/></div>
-    </form>
-</div>
+    <div id="login-container">
+        <form th:action="@{/login}" method="post">
+            <label>Felhasználónév: <input type="text" name="username"/> </label><br>
+            <label>Jelszó: <input type="password" name="password"/> </label><br>
+            <br>
+            <div><input type="submit" value="Bejelentkezés"/></div>
 
-<div style="width: 20%; margin: auto">
-    <h3 class="center ctrl_btn left"><a th:href="@{/registration}">Regisztráció</a></h3>
-    <h3 class="center ctrl_btn right"><a th:href="@{/}">Vissza</a></h3>
-</div>
+        </form>
+    </div>
+
+    <div style="width: 20%; margin: auto">
+        <h3 class="center ctrl_btn left"><a th:href="@{/registration}">Regisztráció</a></h3>
+        <h3 class="center ctrl_btn right"><a th:href="@{/}">Vissza</a></h3>
+    </div>
+</main>
 
 </body>
 </html>

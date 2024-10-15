@@ -7,56 +7,65 @@
 </head>
 <body>
 
-<div class="center back_btn"><a id="back_btn" th:href="@{/}">Vissza</a></div>
+<main>
+    <div class="center back_btn"><a id="back_btn" th:href="@{/}">Vissza</a></div>
 
-<div>
-    <form class="file-upload" th:if="${role} == 'ADMIN'" method="post" enctype="multipart/form-data" th:action="@{/upload}">
-        <h1 class="center">Fájl feltöltése</h1>
-        <div>
-            <label for="file">Fájl:</label><br>
-            <input type="file" id="file" name="file" required>
-        </div>
-        <div>
-            <label for="description">Leírás:</label><br>
-            <textarea id="description" name="description" rows="4" cols="50" maxlength="250"
-                      placeholder="Maximum 250 karakter"></textarea>
-        </div>
-        <div>
-            <label for="price">Ár:</label><br>
-            <input type="text" id="price" name="price" required>
-        </div>
-        <div style="text-align: center">
-            <button type="submit">Feltöltés</button>
-        </div>
-    </form>
+    <div>
+        <form class="file-upload" th:if="${role} == 'ADMIN'" method="post" enctype="multipart/form-data"
+              th:action="@{/upload}">
+            <h1 class="center">Tananyag feltöltése</h1>
+            <div>
+                <label for="file"></label><br>
+                <input type="file" id="file" name="file" required>
+            </div>
+            <div>
+                <label for="description">Add meg a tananyag leírását:</label><br>
+                <textarea id="description" name="description" rows="4" cols="50" maxlength="250"
+                          placeholder="Maximum 250 karakter"></textarea>
+            </div>
+            <div>
+                <label for="price">Add meg a tananyag árát (Ft):</label><br>
+                <input type="number" id="price" name="price" required>
+            </div>
+            <div style="text-align: center">
+                <button type="submit">Feltöltés</button>
+            </div>
+        </form>
 
-    <div class="center error" th:if="${message}">
-        <p th:text="${message}"></p>
-    </div>
-</div>
-
-<div class="container">
-    <div class="card" th:each="file : ${files}">
-        <div class="files-container">
-            <h4 style="text-align: center" th:text="${file.name}"></h4>
-            <h3 th:text="${file.price} + 'Ft'"></h3>
-            <p th:text="'Leírás: ' + ${file.description}"></p>
-            <p th:text="'Feltöltő: ' + ${file.uploader.username}"></p>
-        </div>
-        <div class="edit">
-            <form th:if="${file.uploader.id} == ${user.id}" th:action="@{/files/edit/{id}(id=${file.id})}" method="post">
-                <button>Szerkesztés</button>
-            </form>
-            <form th:if="${file.uploader.id} == ${user.id}" th:action="@{'/files/' + ${file.id}}" onclick="confirmDelete()" method="post">
-                <input type="hidden" name="_method" value="delete"/>
-                <button type="submit">Törlés</button>
-            </form>
-            <form th:if="${file.uploader.id} != ${user.id}" th:action="@{'/purchase/' + ${file.id}}" method="post">
-                <button type="submit">Vásárlás</button>
-            </form>
+        <div class="center error" th:if="${message}">
+            <p th:text="${message}"></p>
         </div>
     </div>
-</div>
+
+    <div class="container">
+        <div class="card" th:each="file : ${files}">
+            <a id="card-link" th:href="@{/files/{id}(id=${file.id})}">
+                <div class="files-container">
+                    <h4 style="text-align: center" th:text="${file.name}"></h4>
+                    <h3 th:text="${file.price} + 'Ft'"></h3>
+                    <p th:text="'Leírás: ' + ${file.description}"
+                       style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"></p>
+                    <p th:text="'Feltöltő: ' + ${file.uploader.username}"></p>
+                </div>
+                <div class="edit">
+                    <form th:if="${file.uploader.id} == ${user.id}" th:action="@{/files/edit/{id}(id=${file.id})}"
+                          method="post">
+                        <button>Szerkesztés</button>
+                    </form>
+                    <form th:if="${file.uploader.id} == ${user.id}" th:action="@{'/files/' + ${file.id}}"
+                          onclick="confirmDelete()" method="post">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit">Törlés</button>
+                    </form>
+                    <form th:if="${file.uploader.id} != ${user.id}" th:action="@{'/purchase/' + ${file.id}}" method="post">
+                        <button type="submit">Vásárlás</button>
+                    </form>
+                </div>
+            </a>
+        </div>
+    </div>
+</main>
+
 
 <!--<div class="center">-->
 <!--    <h1 class="center" th:if="${role} == 'ADMIN'">Feltöltött fájlok</h1>-->

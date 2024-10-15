@@ -10,8 +10,6 @@ import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -270,12 +268,11 @@ public class FileController {
 
 
     @GetMapping("/files/{id}")
-    public ResponseEntity<byte[]> getFile(@PathVariable String id) {
+    public String getFile(@PathVariable String id, Model model) {
         File file = storageService.getFile(id);
+        model.addAttribute("file", file);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
-                .body(file.getData());
+        return "open-file";
     }
 
 

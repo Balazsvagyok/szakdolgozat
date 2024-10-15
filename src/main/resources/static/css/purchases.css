@@ -28,14 +28,19 @@ body {
     align-content: center;
 }
 
-a {
+#card-link {
+    text-decoration: none;
+    color: black;
+}
+
+a:not(#card-link){
     text-decoration: none;
     color: black;
     padding: 10px;
     transition: 0.2s;
 }
 
-a:hover {
+a:hover:not(#card-link) {
     text-decoration: none;
     color: black;
     padding: 10px;
