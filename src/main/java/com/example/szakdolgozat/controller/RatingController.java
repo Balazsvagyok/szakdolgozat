@@ -39,6 +39,11 @@ public class RatingController {
         File file = fileRepository.findById(String.valueOf(fileId))
                 .orElseThrow(() -> new RuntimeException("Fájl nem található"));
 
+        if (file.getUploader().equals(loggedInUser)) {
+            redirectAttributes.addFlashAttribute("message", "Saját magad által feltöltött fájlokat nem értékelheted!");
+            return "redirect:/files/" + fileId;
+        }
+
         boolean hasPurchased = purchaseRepository.existsByUserAndFile(loggedInUser, file);
 
         if (!hasPurchased) {

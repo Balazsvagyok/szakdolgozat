@@ -1,57 +1,64 @@
 <!DOCTYPE html>
 <html lang="hu" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/index.css">
-    <title th:text="${file.getName()}"></title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/open-file.css" type="text/css">
+    <title th:text="${file.getName()}">Title</title>
 </head>
+
 <body>
 
-<main>
-    <h1 class="center">Tananyag leírása</h1>
-    <div class="center" th:object="${file}">
-        <div>
-            <p>Fájl neve:</p>
-            <p id="name" th:text="*{name}"></p>
-        </div>
-        <div>
-            <p>Fájl típusa:</p>
-            <p id="type" th:text="*{type}"></p>
-        </div>
-        <div>
-            <p>Leírás:</p>
-            <p id="description" th:text="*{description}"></p>
-        </div>
-        <div>
-            <p>Ár:</p>
-            <p id="price" th:text="*{price}"></p>
+<h1 class="center">Tananyag leírása</h1>
+<div class="data-container">
+    <div>
+        <label for="name">Fájl neve:</label>
+        <input type="text" id="name" th:value="${file.getName()}" readonly>
+    </div>
+    <div>
+        <label for="type">Fájl típusa:</label>
+        <input type="text" id="type" th:value="${file.getType()}" readonly>
+    </div>
+    <div>
+        <label for="description">Leírás:</label><br>
+        <textarea id="description" readonly style="width: 500px; height: 100px"
+                  th:text="${file.getDescription()}"></textarea>
+    </div>
+    <div>
+        <label for="price">Ár:</label>
+        <input type="text" id="price" th:value="${file.getPrice()}" readonly>
+    </div>
+</div>
+
+<div class="center error" th:if="${message}">
+    <p th:text="${message}"></p>
+</div>
+
+<div class="ratings">
+    <h3 class="center">Értékelések</h3>
+    <div th:each="rating : ${ratings}" class="rating-card">
+        <div class="rating-info">
+            <strong th:text="${rating.getUser().getUsername()} + ': '">Felhasználónév</strong>
+            <span th:text="${rating.getScore()}">Pontszám</span>
+            <img th:src="@{/pictures/star.png}" alt="csillag" width="20" height="20"
+                 th:each="i : ${#numbers.sequence(1, rating.getScore())}">
+            <p th:if="${rating.getComment()} != null" th:text="${rating.getComment()}">Komment</p>
         </div>
     </div>
 
-    <div class="center error" th:if="${message}">
-        <p th:text="${message}"></p>
+    <h3 class="center">Értékelés leadása</h3>
+    <div class="rating-add">
+        <form th:action="@{/ratings/rate}" method="post">
+            <input type="hidden" name="fileId" th:value="${file.getId()}">
+            <label for="score">Pontszám:</label>
+            <input type="number" id="score" name="score" min="1" max="5" required>
+
+            <label for="comment">Megjegyzés:</label>
+            <textarea id="comment" name="comment" maxlength="250"></textarea>
+
+            <button type="submit">Értékelés beküldése</button>
+        </form>
     </div>
-
-    <h3>Értékelések</h3>
-    <ul>
-        <li th:each="rating : ${ratings}">
-            <strong th:text="${rating.user.username}">Felhasználónév</strong>:
-            <span th:text="${rating.score}">Pontszám</span>
-            <p th:if="${rating.comment}" th:text="${rating.comment}">Komment</p>
-        </li>
-    </ul>
-
-    <h3>Értékelés leadása</h3>
-    <form th:action="@{/ratings/rate}" method="post">
-        <input type="hidden" name="fileId" th:value="${file.id}">
-        <label for="score">Pontszám:</label>
-        <input type="number" id="score" name="score" min="1" max="5" required>
-        <label for="comment">Megjegyzés:</label>
-        <textarea id="comment" name="comment" maxlength="250"></textarea>
-        <button type="submit">Értékelés beküldése</button>
-    </form>
-</main>
+</div>
 
 </body>
 </html>
