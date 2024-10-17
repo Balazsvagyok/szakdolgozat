@@ -14,37 +14,28 @@
 
 <div class="center back_btn"><a id="back_btn" th:href="@{/}">Vissza</a></div>
 
-<table class="center table">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Név</th>
-        <th>Email</th>
-        <th>Role</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users}">
-        <td th:text="${user.getId()}">Id</td>
-        <td th:text="${user.getUsername()}">Név</td>
-        <td th:text="${user.getEmail()}">Email</td>
-        <td th:text="${user.getRole()}">Role</td>
-        <td>
-<!--            <a th:href="@{/edit/{id}(id=${user.id})}">Módosítás</a>-->
+<form th:action="@{/users/search}" method="get">
+    <input style="width: 250px" type="search" id="search-input" name="name" placeholder="Keresés felhasználó neve alapján">
+    <button id="search-button">Keresés</button>
+</form>
+
+<div class="user-container">
+    <div class="user-card" th:each="user : ${users}">
+        <div class="user-id">ID: <span th:text="${user.getId()}">Id</span></div>
+        <div class="user-name">Név: <span th:text="${user.getUsername()}">Név</span></div>
+        <div class="user-email">Email: <span th:text="${user.getEmail()}">Email</span></div>
+        <div class="user-role">Role: <span th:text="${user.getRole()}">Role</span></div>
+        <div class="user-btns">
             <form th:action="@{'/edit/' + ${user.id}}" method="post">
                 <button type="submit">Módosítás</button>
             </form>
-        </td>
-        <td>
-<!--            <a th:href="@{/delete/{id}(id=${user.id})}" onclick="return confirmDelete()">Törlés</a>-->
             <form th:action="@{'/delete/' + ${user.id}}" method="post" onclick="return confirmDelete()">
                 <input type="hidden" name="_method" value="delete"/>
                 <button type="submit">Törlés</button>
             </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        </div>
+    </div>
+</div>
 
 <script>
     function confirmDelete() {

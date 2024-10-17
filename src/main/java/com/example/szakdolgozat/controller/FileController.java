@@ -191,6 +191,12 @@ public class FileController {
                 return "redirect:/files";
             }
 
+            if (file.getSize() > 16 * 1024 * 1024) {
+                message = "Fájl feltöltése sikertelen: A fájl mérete max. 16 MB!";
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/files";
+            }
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User loggedInUser = getLoggedInUser(authentication);
 

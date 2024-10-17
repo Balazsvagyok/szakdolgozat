@@ -286,3 +286,22 @@ a:hover {
     transition-timing-function: ease-in-out;
     transition: 0.2s;
 }
+
+/* USERS */
+
+.user-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.user-card {
+    display: inline-grid;
+    width: 300px;
+    height: 150px;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom right, white, lightblue);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}

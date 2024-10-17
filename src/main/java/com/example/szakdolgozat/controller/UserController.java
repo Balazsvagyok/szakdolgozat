@@ -16,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 
 @Controller
 @RequestMapping
@@ -63,6 +65,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/users/search")
+    public String searchUser(@RequestParam("name") String name, Model model) {
+        if (isAdmin()) {
+            List<User> users = userRepository.findByUsernameContaining(name);
+            if (!users.isEmpty()) {
+                model.addAttribute("users", users);
+                return "users";
+            } else {
+                model.addAttribute("message", "Nem található a megadott nevű felhasználó!");
+                return "users";
+            }
+        } else {
+            return "redirect: ";
+        }
+    }
+
     @GetMapping("/profile")
     public String showUserProfile(Model model) {
         String username = getLoggedInUsername();
@@ -85,6 +103,7 @@ public class UserController {
 
         return "redirect: ";
     }
+
 
     @GetMapping("/registration")
     public String showRegistrationPage(Model model) {
