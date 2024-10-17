@@ -4,6 +4,7 @@ import com.example.szakdolgozat.model.File;
 import com.example.szakdolgozat.model.Rating;
 import com.example.szakdolgozat.model.User;
 import com.example.szakdolgozat.repository.FileRepository;
+import com.example.szakdolgozat.repository.PurchaseRepository;
 import com.example.szakdolgozat.repository.RatingRepository;
 import com.example.szakdolgozat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,12 @@ public class RatingController {
 
     @Autowired
     private RatingRepository ratingRepository;
-
     @Autowired
     private FileRepository fileRepository;
-
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     @PostMapping("/rate")
     public String rateFile(@RequestParam Long fileId, @RequestParam int score,
@@ -37,6 +38,13 @@ public class RatingController {
 
         File file = fileRepository.findById(String.valueOf(fileId))
                 .orElseThrow(() -> new RuntimeException("Fájl nem található"));
+
+        boolean hasPurchased = purchaseRepository.existsByUserAndFile(loggedInUser, file);
+
+        if (!hasPurchased) {
+            redirectAttributes.addFlashAttribute("message", "Csak megvásárolt fájlokat értékelhetsz!");
+            return "redirect:/files/" + fileId;
+        }
 
         if (ratingRepository.findByUserAndFile(loggedInUser, file).isEmpty()) {
             Rating rating = new Rating();
