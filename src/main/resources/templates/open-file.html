@@ -33,8 +33,8 @@
     <p th:text="${message}"></p>
 </div>
 
+<h3 class="center">Értékelések</h3>
 <div class="ratings">
-    <h3 class="center">Értékelések</h3>
     <div th:each="rating : ${ratings}" class="rating-card">
         <div class="rating-info">
             <strong th:text="${rating.getUser().getUsername()} + ': '">Felhasználónév</strong>
@@ -45,8 +45,8 @@
         </div>
     </div>
 
-    <h3 class="center">Értékelés leadása</h3>
     <div class="rating-add">
+        <h3 class="center">Értékelés leadása</h3>
         <form th:action="@{/ratings/rate}" method="post">
             <input type="hidden" name="fileId" th:value="${file.getId()}">
             <label for="score">Pontszám:</label>
@@ -59,6 +59,7 @@
         </form>
     </div>
 </div>
+<div th:replace="~{index :: #footer}"></div>
 
 </body>
 </html>

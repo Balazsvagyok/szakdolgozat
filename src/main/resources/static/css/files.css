@@ -3,7 +3,6 @@
 }
 
 html {
-    height: 100%;
     margin: 10px 50px;
 }
 
@@ -13,7 +12,8 @@ body {
     background-attachment: fixed;
     background-size: 100% 100%;
     width: 100%;
-    height: 100%;
+    min-height: 400px;
+    margin-bottom: 100px;
     overflow: auto;
     font-family: Arial, serif;
 }
@@ -33,7 +33,7 @@ body {
     color: black;
 }
 
-a:not(#card-link){
+a:not(#card-link) {
     text-decoration: none;
     color: black;
     padding: 10px;
@@ -65,7 +65,7 @@ textarea, #price {
     width: 100%;
     border: none;
     border-radius: 10px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 #price {
@@ -95,7 +95,7 @@ textarea, #price {
 
 .card {
     background-image: linear-gradient(to bottom right, white, lightblue);
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     display: flex;
     flex-direction: column;
@@ -105,7 +105,7 @@ textarea, #price {
 }
 
 .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
 
@@ -124,7 +124,7 @@ textarea, #price {
     font-size: 18px;
 }
 
-.files-container{
+.files-container {
     padding: 5px;
     width: 300px;
     border-radius: 10px;

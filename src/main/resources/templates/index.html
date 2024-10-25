@@ -12,7 +12,8 @@
     <h1>Education</h1>
 
     <p id="logged-in" sec:authorize="isAuthenticated()">Bejelentkezve, mint&nbsp;<span style="font-weight: bold"
-            sec:authentication="principal.username"></span></p>
+                                                                                       sec:authentication="principal.username"></span>
+    </p>
 
     <div class="nav-links">
         <a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a>
@@ -62,5 +63,12 @@
         </div>
     </div>
 </main>
+
+<div id="footer" style="position: fixed;
+    bottom: 0;
+    right: 0;
+    text-align: center;">
+    <p id="footer_text" style="margin: 5px">Copyright &copy; 2024 - Education</p>
+</div>
 </body>
 </html>
