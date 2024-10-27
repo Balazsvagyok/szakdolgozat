@@ -32,13 +32,11 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Regisztráció</button>
         </form>
-        <div class="d-flex justify-content-around">
-            <a th:href="@{/login}" class="btn btn-secondary mt-3">Bejelentkezés</a>
-            <a th:href="@{/}" class="btn btn-secondary mt-3">Vissza</a>
-        </div>
+        <p class="text-center mt-3">Már van fiókja? <a th:href="@{/login}" class="link-primary">Bejelentkezés</a></p>
+        <p class="text-center mt-3">Vissza a <a class="link-primary" th:href="@{/}">főoldalra</a></p>
     </div>
 </div>
-<div th:replace="index :: #footer"></div>
+<div th:replace="~{index :: #footer}"></div>
 
 </body>
 </html>
