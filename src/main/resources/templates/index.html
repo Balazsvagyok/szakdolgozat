@@ -13,40 +13,63 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
-<nav class="header">
-    <h1>Education</h1>
-
-    <p id="logged-in" sec:authorize="isAuthenticated()">Bejelentkezve, mint&nbsp;<span style="font-weight: bold"
-                                                                                       sec:authentication="principal.username"></span>
-    </p>
-
-    <div class="nav-links">
-        <a sec:authorize="!isAuthenticated()" th:href="@{/login}" id="bejelentkezes">Bejelentkezés</a>
-        <a sec:authorize="!isAuthenticated()" th:href="@{/registration}" id="regisztracio">Regisztráció</a>
-
-        <div class="dropdown">
-            <a class="drop-link nav-link" sec:authorize="isAuthenticated()" th:href="@{/profile}"
-               id="profile">Profilom</a>
-
-            <div class="dropdown-content">
-                <a th:if="${role} == 'ADMIN'" th:href="@{/files}">Feltöltött tananyagok</a>
-                <a th:if="${role} == 'ADMIN'" href="#">Tananyag feltöltése</a>
-                <a th:if="${role} == 'USER'" th:href="@{/purchases}">Megvásárolt tananyagok</a>
-                <form method="post" th:action="@{/edit/{id}(id=${id})}">
-                    <button type="submit">Profil módosítása</button>
-                </form>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">Education</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <p sec:authorize="isAuthenticated()" class="text-secondary align-middle d-flex align-items-center m-0">
+            Bejelentkezve: <span
+                class="navbar-text align-middle ms-2"
+                th:text="${#authentication.name}"></span>
+        </p>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link px-3" sec:authorize="!isAuthenticated()" th:href="@{/login}">Bejelentkezés</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3" sec:authorize="!isAuthenticated()"
+                       th:href="@{/registration}">Regisztráció</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle px-3" sec:authorize="isAuthenticated()"
+                       id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                       th:text="${#authentication.name}"></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" th:href="@{/profile}">Profilom</a></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/edit/{id}(id=${id})}">Profil módosítása</a>
+                        </li>
+                        <li><a class="dropdown-item" th:if="${role} == 'ADMIN'" th:href="@{/files}">Feltöltött
+                            tananyagok</a></li>
+                        <li><a class="dropdown-item" th:if="${role} == 'ADMIN'" href="#">Tananyag feltöltése</a></li>
+                        <li><a class="dropdown-item" th:if="${role} == 'USER'" th:href="@{/purchases}">Megvásárolt
+                            tananyagok</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()"
+                       th:href="@{/files}"
+                       id="fajlok">Tananyagok</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()"
+                       th:href="@{/users}"
+                       id="felhasznalok">Felhasználók</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3" sec:authorize="isAuthenticated()"
+                       href="javascript: document.logoutForm.submit()"
+                       role="menuitem" id="kijelentkezes">Kijelentkezés</a>
+                </li>
+            </ul>
+            <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                <input hidden type="submit" value="Kijelentkezés"/>
+            </form>
         </div>
-
-        <a class="nav-link" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/files}"
-           id="fajlok">Tananyagok</a>
-        <a class="nav-link" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()" th:href="@{/users}"
-           id="felhasznalok">Felhasználók</a>
-        <a sec:authorize="isAuthenticated()" href="javascript: document.logoutForm.submit()" role="menuitem"
-           id="kijelentkezes">Kijelentkezés</a>
-        <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
-            <input hidden type="submit" value="Kijelentkezés"/>
-        </form>
     </div>
 </nav>
 
@@ -55,16 +78,22 @@
         <p th:text="${message}"></p>
     </div>
 
-    <div class="flex_container">
-        <div class="flex_child">
-            <h1 id="hero_text">
-                Tanulj <br>
-                Bárhol, <br>
-                Bármikor
-            </h1>
-        </div>
-        <div id="hero_div_block" class="flex_child">
-            <a th:href="@{/files}" id="tananyagok">Tananyagok</a>
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="container" style="background-color: #f8f9fa; border-radius: 1rem; padding: 2rem;">
+            <div class="row align-items-center">
+                <div class="col d-flex align-items-center justify-content-center">
+                    <h1 id="hero-text" class="display-1">
+                        Tanulj <br>
+                        Bárhol, <br>
+                        Bármikor
+                    </h1>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-center">
+                        <a th:href="@{/files}" id="tananyagok" class="btn btn-primary btn-lg fs-1">Tananyagok</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
