@@ -4,36 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fájl szerkesztése</title>
-    <link rel="stylesheet" href="/css/index.css">
+    <!--<link rel="stylesheet" href="/css/index.css">-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 </head>
 <body>
-<h1 class="center">Fájl szerkesztése</h1>
-<form class="center" th:action="@{/files/update/{id}(id=${id})}" th:object="${file}" method="post">
-    <div>
-        <label for="name">Fájl neve:</label>
-        <input type="text" id="name" th:field="*{name}" readonly>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+<nav th:replace="~{index :: nav}"></nav>
+
+<div class="container" style="padding-top: 72px">
+    <h1 class="text-center">Fájl szerkesztése</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form th:action="@{/files/update/{id}(id=${id})}" th:object="${file}" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Fájl neve:</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="type" class="form-label">Fájl típusa:</label>
+                    <input type="text" class="form-control" id="type" th:field="*{type}" readonly>
+                </div>
+                <!--  <div>-->
+                <!--    <label for="size" class="form-label">Fájl mérete:</label>-->
+                <!--    <input type="text" class="form-control" id="size" th:field="*{}" readonly>-->
+                <!--  </div>-->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Leírás:</label>
+                    <textarea class="form-control" id="description" th:field="*{description}" rows="4" cols="50"
+                              maxlength="250"
+                              placeholder="Maximum 250 karakter"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Ár:</label>
+                    <input type="number" class="form-control" id="price" th:field="*{price}">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Mentés</button>
+            </form>
+        </div>
     </div>
-    <div>
-        <label for="type">Fájl típusa:</label>
-        <input type="text" id="type" th:field="*{type}" readonly>
-    </div>
-    <!--  <div>-->
-    <!--    <label for="size">Fájl mérete:</label>-->
-    <!--    <input type="text" id="size" th:field="*{}" readonly>-->
-    <!--  </div>-->
-    <div>
-        <label for="description">Leírás:</label>
-        <textarea id="description" th:field="*{description}" rows="4" cols="50" maxlength="250"
-                  placeholder="Maximum 250 karakter"></textarea>
-    </div>
-    <div>
-        <label for="price">Ár:</label>
-        <input type="number" id="price" th:field="*{price}">
-    </div>
-    <div>
-        <button type="submit">Mentés</button><br>
-    </div>
-</form>
-<div th:replace="index :: #footer"></div>
+</div>
+
+<div th:replace="~{index :: #footer}"></div>
 </body>
 </html>

@@ -42,11 +42,15 @@ public class FileController {
     @Autowired
     private RatingRepository ratingRepository;
 
-    // private static final String UPLOAD_DIR = "uploads/";
-
     private User getLoggedInUser(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
         return userPrincipal.getUser();
+    }
+
+    private boolean isAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ADMIN"));
     }
 
     // Collection to String
@@ -97,30 +101,6 @@ public class FileController {
         }).collect(Collectors.toList());
     }
 
-//    public void listVideos(Model model, RedirectAttributes redirectAttributes) {
-//        try {
-//            Iterable<String> videos = videoService.listAllVideos();
-//            model.addAttribute("videos", videos);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            redirectAttributes.addFlashAttribute("message", "Hiba a videófájlok beolvasása közben!");
-//        }
-//    }
-
-//    @PostMapping("/upload/video")
-//    public String uploadVideo(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-//        try {
-//            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-//            Files.createDirectories(path.getParent());
-//            Files.write(path, file.getBytes());
-//            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikeres: " + file.getOriginalFilename());
-//        } catch (Exception e) {
-//            redirectAttributes.addFlashAttribute("message", "Fájl feltöltése sikertelen: " + e.getMessage());
-//        }
-//        return "redirect:/files";
-//    }
-
-
     // Megvásárolható fájlok listázása
     @GetMapping("/files")
     public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
@@ -129,11 +109,11 @@ public class FileController {
         String role = getUserRole(authentication);
 
         List<ResponseFile> files = getResponseFiles();
-        // listVideos(model, redirectAttributes);
 
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
         model.addAttribute("role", role);
+        model.addAttribute("id", loggedInUser.getId());
         return "files";
     }
 
@@ -150,6 +130,7 @@ public class FileController {
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
         model.addAttribute("role", role);
+        model.addAttribute("id", loggedInUser.getId());
         return "purchases";
     }
 
@@ -229,8 +210,12 @@ public class FileController {
 
     @PostMapping("/files/edit/{id}")
     public String editFileForm(@PathVariable Long id, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = getLoggedInUser(authentication);
+
         File file = storageService.getFile(String.valueOf(id));
         model.addAttribute("file", file);
+        model.addAttribute("role", loggedInUser.getRole());
         return "update-file";
     }
 
@@ -279,10 +264,15 @@ public class FileController {
 
     @GetMapping("/files/{id}")
     public String getFile(@PathVariable String id, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = getLoggedInUser(authentication);
+
         File file = storageService.getFile(id);
         List<Rating> ratings = ratingRepository.findByFile(file);
         model.addAttribute("file", file);
         model.addAttribute("ratings", ratings);
+        model.addAttribute("role", loggedInUser.getRole());
+        model.addAttribute("id", loggedInUser.getId());
 
         return "open-file";
     }

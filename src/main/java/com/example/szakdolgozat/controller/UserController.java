@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Controller
@@ -32,6 +33,11 @@ public class UserController {
     private String getLoggedInUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
+    }
+
+    private User getLoggedInUser(Authentication authentication) {
+        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+        return userPrincipal.getUser();
     }
 
     private boolean isAdmin() {
@@ -57,8 +63,13 @@ public class UserController {
     @GetMapping("/users")
     public String showAllUsers(Model model) {
         if (isAdmin()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User loggedInUser = getLoggedInUser(authentication);
+
             Iterable<User> userList = userRepository.findAll();
             model.addAttribute("users", userList);
+            model.addAttribute("role", loggedInUser.getRole());
+            model.addAttribute("id", loggedInUser.getId());
             return "users";
         } else {
             return "redirect: ";
@@ -71,11 +82,10 @@ public class UserController {
             List<User> users = userRepository.findByUsernameContaining(name);
             if (!users.isEmpty()) {
                 model.addAttribute("users", users);
-                return "users";
             } else {
                 model.addAttribute("message", "Nem található a megadott nevű felhasználó!");
-                return "users";
             }
+            return "users";
         } else {
             return "redirect: ";
         }
@@ -140,11 +150,13 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
         model.addAttribute("user", user);
+        model.addAttribute("role", user.getRole());
+        model.addAttribute("l_id", user.getId());
         return "update-user";
     }
 
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") int id, User user, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String updateUser(@PathVariable("id") int id, Model model, User user, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session) {
         if (result.hasErrors()) {
             user.setId(id);
             return "update-user";
@@ -154,17 +166,25 @@ public class UserController {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
         User loggedInUser = userPrincipal.getUser();
 
-        if (loggedInUser.getId().equals(id) || loggedInUser.getRole().equals("ADMIN")) {
+        if (loggedInUser.getId().equals(id) || (loggedInUser.getRole().equals("ADMIN"))) {
             User existingUser = userRepository.findByUsername(user.getUsername());
             if (existingUser != null && existingUser.getId() != id) {
+                model.addAttribute("role", loggedInUser.getRole());
                 result.rejectValue("username", "error.user", "A felhasználónév már létezik!");
                 return "update-user";
             } else {
                 User userToUpdate = userRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("User not found!"));
 
+                if (loggedInUser.getRole().equals("ADMIN") && loggedInUser.getId().equals(id) && !Objects.equals(loggedInUser.getRole(), user.getRole())) {
+                    model.addAttribute("role", loggedInUser.getRole());
+                    result.rejectValue("role", "error.user", "A saját szereped nem változtatható!");
+                    return "update-user";
+                }
+
                 userToUpdate.setUsername(user.getUsername());
                 userToUpdate.setEmail(user.getEmail());
+                userToUpdate.setRole(user.getRole());
                 userRepository.save(userToUpdate);
 
                 if (loggedInUser.getId().equals(id)) {
