@@ -146,12 +146,17 @@ public class UserController {
 
     @GetMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = getLoggedInUser(authentication);
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
+        model.addAttribute("id", loggedInUser.getId());
+        model.addAttribute("loggedInUserRole", loggedInUser.getRole());
+        model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("user", user);
         model.addAttribute("role", user.getRole());
-        model.addAttribute("l_id", user.getId());
         return "update-user";
     }
 

@@ -39,8 +39,8 @@
                     <div class="mb-3">
                         <label for="role" class="form-label">Szerep:</label>
                         <select th:field="*{role}" id="role" class="form-select">
-                            <option value="USER" th:selected="${user.role == 'USER'}">Felhasználó</option>
-                            <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">Adminisztrátor</option>
+                            <option value="USER">Felhasználó</option>
+                            <option value="ADMIN">Adminisztrátor</option>
                         </select>
                         <span class="text-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></span>
                     </div>

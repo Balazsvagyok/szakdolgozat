@@ -45,8 +45,7 @@
                     <div class="rating-info">
                         <strong th:text="${rating.getUser().getUsername()} + ': '">Felhasználónév</strong>
                         <span th:text="${rating.getScore()}">Pontszám</span>
-                        <img th:src="@{/pictures/star.png}" alt="csillag" width="20" height="20"
-                             th:each="i : ${#numbers.sequence(1, rating.getScore())}">
+                        <i class="bi bi-star-fill" style="color: gold" th:each="i : ${#numbers.sequence(1, rating.getScore())}"></i>
                         <p th:if="${rating.getComment()} != null" th:text="${rating.getComment()}">Komment</p>
                     </div>
                 </div>

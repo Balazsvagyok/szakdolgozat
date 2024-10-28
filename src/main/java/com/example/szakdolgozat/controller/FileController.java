@@ -47,12 +47,6 @@ public class FileController {
         return userPrincipal.getUser();
     }
 
-    private boolean isAdmin() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ADMIN"));
-    }
-
     // Collection to String
     private String getUserRole(Authentication authentication) {
         return authentication.getAuthorities().stream().map(Object::toString)
