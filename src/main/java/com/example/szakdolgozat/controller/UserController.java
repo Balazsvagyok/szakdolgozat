@@ -1,6 +1,8 @@
 package com.example.szakdolgozat.controller;
 
+import com.example.szakdolgozat.model.Cart;
 import com.example.szakdolgozat.model.User;
+import com.example.szakdolgozat.repository.CartRepository;
 import com.example.szakdolgozat.repository.UserRepository;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import com.example.szakdolgozat.service.FileStorageService;
@@ -26,9 +28,10 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private CartRepository cartRepository;
 
     private String getLoggedInUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -79,6 +82,7 @@ public class UserController {
     @GetMapping("/users/search")
     public String searchUser(@RequestParam("name") String name, Model model) {
         if (isAdmin()) {
+            model.addAttribute("role", isAdmin() ? "ADMIN" : "USER");
             List<User> users = userRepository.findByUsernameContaining(name);
             if (!users.isEmpty()) {
                 model.addAttribute("users", users);
@@ -136,6 +140,11 @@ public class UserController {
             user.setRole("USER");
             user.setNewPassword("");
             userRepository.save(user);
+
+            Cart cart = new Cart();
+            cart.setUser(user);
+            cartRepository.save(cart);
+
             return "redirect:/login";
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("error", "Hiba történt a mentés során.");
@@ -156,7 +165,7 @@ public class UserController {
         model.addAttribute("loggedInUserRole", loggedInUser.getRole());
         model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("user", user);
-        model.addAttribute("role", user.getRole());
+        model.addAttribute("role", isAdmin() ? user.getRole() : loggedInUser.getRole());
         return "update-user";
     }
 
@@ -220,8 +229,16 @@ public class UserController {
             return "update-user";
         }
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = getLoggedInUser(authentication);
+
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+
+        if (!loggedInUser.getId().equals(id) && !loggedInUser.getRole().equals("ADMIN")) {
+            result.rejectValue("password", "error.user", "Csak a saját jelszavadat módosíthatod!");
+            return "update-user";
+        }
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 

@@ -17,11 +17,7 @@
 <nav th:replace="~{index :: nav}"></nav>
 
 <div class="container" style="margin-top: 72px">
-    <h1 class="text-center">Üdvözöllek <b><span sec:authentication="principal.username"></span></b></h1>
-
-    <div class="text-center mb-4">
-        <a id="back_btn" class="btn btn-secondary" th:href="@{/}">Vissza</a>
-    </div>
+    <h1 class="text-center mb-3">Felhasználók</h1>
 
     <form th:action="@{/users/search}" method="get" class="d-flex justify-content-center mb-5">
         <input class="form-control me-2" style="max-width: 300px;" type="search" id="search-input" name="name"
@@ -49,7 +45,7 @@
         </div>
     </div>
 </div>
-<div th:replace="index :: #footer"></div>
+<div th:replace="~{index :: #footer}"></div>
 
 <script>
     function confirmDelete() {

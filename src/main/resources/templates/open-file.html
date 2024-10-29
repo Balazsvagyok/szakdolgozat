@@ -41,6 +41,7 @@
         <div class="col-md-6">
             <h3 class="text-center">Értékelések</h3>
             <div class="ratings">
+                <div th:if="${#lists.isEmpty(ratings)}" class="text-center">Még nincs értékelés</div>
                 <div th:each="rating : ${ratings}" class="rating-card">
                     <div class="rating-info">
                         <strong th:text="${rating.getUser().getUsername()} + ': '">Felhasználónév</strong>

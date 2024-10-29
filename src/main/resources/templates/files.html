@@ -25,20 +25,28 @@
                             data-bs-target="#uploadSection" aria-expanded="false" aria-controls="uploadSection">
                         Tananyag feltöltése
                     </button>
-                    <div class="collapse" id="uploadSection">
+                    <div class="collapse mt-2" id="uploadSection">
                         <form class="file-upload" method="post" enctype="multipart/form-data" th:action="@{/upload}">
-                            <h1 class="center">Tananyag feltöltése</h1>
                             <div class="mb-3">
-                                <label for="file" class="form-label">Fájl:</label>
+                                <label for="file" class="form-label">
+                                    <b>Fájl: </b>
+                                    <span class="text-secondary">(pdf, docx, xlsx, pptx, mp4, avi, wmv)</span>
+                                </label>
                                 <input type="file" class="form-control" id="file" name="file" required>
                             </div>
                             <div class="mb-3">
-                                <label for="description" class="form-label">Leírás:</label>
+                                <label for="description" class="form-label">
+                                    <b>Leírás: </b>
+                                    <span class="text-secondary">Tananyag részletes leírása</span>
+                                </label>
                                 <textarea class="form-control" id="description" name="description" rows="4" cols="50"
                                           maxlength="250" placeholder="Maximum 250 karakter"></textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="price" class="form-label">Ár (Ft):</label>
+                                <label for="price" class="form-label">
+                                    <b>Ár</b>
+                                    <span class="text-secondary"> (Ft): Amennyiben ingyenes, akkor 0-t adjon meg</span>
+                                </label>
                                 <input type="number" class="form-control" id="price" name="price" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Feltöltés</button>
@@ -84,9 +92,9 @@
                                     <input type="hidden" name="_method" value="delete"/>
                                     <button class="btn btn-danger btn-sm mb-1">Törlés</button>
                                 </form>
-                                <form th:if="${file.uploader.id} != ${user.id}" th:action="@{'/purchase/' + ${file.id}}"
+                                <form th:if="${file.uploader.id} != ${user.id}" th:action="@{'/cart/add/' + ${file.id}}"
                                       method="post">
-                                    <button class="btn btn-success btn-sm mb-1">Vásárlás</button>
+                                    <button class="btn btn-success btn-sm mb-1">Kosárba rakom</button>
                                 </form>
                             </div>
                         </div>

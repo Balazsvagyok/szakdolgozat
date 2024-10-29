@@ -48,17 +48,23 @@
                         <li>
                             <a class="dropdown-item" th:href="@{/edit/{id}(id=${id})}">Profil módosítása</a>
                         </li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" th:if="${role} == 'ADMIN'" th:href="@{/files}">Feltöltött
                             tananyagok</a></li>
                         <li><a class="dropdown-item" th:if="${role} == 'ADMIN'" th:href="@{/files}">Tananyag
                             feltöltése</a></li>
-                        <li><a class="dropdown-item" th:if="${role} == 'USER'" th:href="@{/purchases}">Megvásárolt
+                        <li th:if="${role} == 'ADMIN'"><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/purchases}">Megvásárolt
                             tananyagok</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-3" sec:authorize="isAuthenticated()" th:href="@{/files}" id="fajlok"><i
-                            class="bi bi-book" style="font-size: 1.1rem"></i> Tananyagok</a>
+                    <a class="nav-link px-3" sec:authorize="isAuthenticated()" th:href="@{/cart}" id="kosar">
+                        <i class="bi bi-cart" style="font-size: 1.1rem"></i> Kosár</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3" sec:authorize="isAuthenticated()" th:href="@{/files}" id="fajlok">
+                        <i class="bi bi-book" style="font-size: 1.1rem"></i> Tananyagok</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link px-3" th:if="${role} == 'ADMIN'" sec:authorize="isAuthenticated()"
@@ -153,7 +159,7 @@
     </div>
 </main>
 
-<footer id="footer" class="bg-light text-center py-3">
+<footer id="footer" class="bg-light text-center py-3 mt-auto">
     <div class="container">
         <p class="mb-0">&copy; 2024 - Education</p>
     </div>
