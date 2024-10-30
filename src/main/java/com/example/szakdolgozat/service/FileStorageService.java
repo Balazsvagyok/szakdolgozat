@@ -37,6 +37,12 @@ public class FileStorageService {
                 .collect(Collectors.toList());
     }
 
+    public List<File> getCurrentUserFiles(User user) {
+        return fileRepository.findAllByUploader(user).stream()
+                .filter(file -> !file.isDeleted())
+                .collect(Collectors.toList());
+    }
+
     public void saveFile(File file) throws IOException {
         fileRepository.save(file);
     }

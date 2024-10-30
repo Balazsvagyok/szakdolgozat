@@ -96,7 +96,28 @@ public class FileController {
         }).collect(Collectors.toList());
     }
 
-    // Megvásárolható fájlok listázása
+    private List<ResponseFile> getCurrentUserFiles(User user) {
+        return storageService.getCurrentUserFiles(user).stream()
+                .map(file -> {
+                    String fileDownloadUri = ServletUriComponentsBuilder
+                            .fromCurrentContextPath()
+                            .path("/files/")
+                            .path(String.valueOf(file.getId()))
+                            .toUriString();
+
+                    return new ResponseFile(
+                            file.getId(),
+                            file.getName(),
+                            fileDownloadUri,
+                            file.getType(),
+                            file.getData().length,
+                            file.getDescription(),
+                            file.getPrice(),
+                            file.getUploader(),
+                            file.isDeleted());
+                }).collect(Collectors.toList());
+    }
+
     @GetMapping("/files")
     public String getListFiles(Model model, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,7 +135,24 @@ public class FileController {
         return "files";
     }
 
-    // Megvásárolt fájlok listázása
+
+    @GetMapping("/myfiles")
+    public String getListMyFiles(Model model, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = getLoggedInUser(authentication);
+
+        if (loggedInUser.getRole().equals("ADMIN")) {
+            List<ResponseFile> files = getCurrentUserFiles(loggedInUser);
+
+            model.addAttribute("user", loggedInUser);
+            model.addAttribute("files", files);
+            model.addAttribute("role", loggedInUser.getRole());
+            model.addAttribute("id", loggedInUser.getId());
+            return "files";
+        }
+        return "redirect:/";
+    }
+
     @GetMapping("/purchases")
     public String getListPurchases(Model model, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -122,7 +160,6 @@ public class FileController {
         String role = getUserRole(authentication);
 
         List<ResponseFile> files = getPurchasedFiles(loggedInUser);
-        // listVideos(model, redirectAttributes);
 
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
@@ -255,8 +292,6 @@ public class FileController {
             os.write(dbFile.getData(), 0, dbFile.getData().length);
         }
     }
-
-
 
 
     @GetMapping("/files/{id}")
