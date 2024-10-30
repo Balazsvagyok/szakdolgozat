@@ -53,8 +53,8 @@
 
                 <div class="rating-add">
                     <h3 class="text-center">Értékelés leadása</h3>
-                    <div class="text-center mt-3 text-danger" th:if="${message}">
-                        <p th:text="${message}"></p>
+                    <div class="alert alert-info text-center text-secondary mt-3" th:if="${message}">
+                        <p class="m-0" th:text="${message}"></p>
                     </div>
                     <form th:action="@{/ratings/rate}" method="post">
                         <input type="hidden" name="fileId" th:value="${file.getId()}">
