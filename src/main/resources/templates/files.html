@@ -56,14 +56,14 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="text-center text-danger" th:if="${message}">
-                        <p class="fs-5" th:text="${message}"></p>
+                    <div class="alert alert-info text-center text-secondary" th:if="${message}">
+                        <p class="m-0 fs-5" th:text="${message}"></p>
                     </div>
                 </div>
             </div>
             <h2 class="text-center">Feltöltött tananyagok</h2>
 
-            <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
                 <div class="col" th:each="file : ${files}">
                     <div class="card h-100">
                         <div class="card-header">
@@ -92,9 +92,10 @@
                                     <input type="hidden" name="_method" value="delete"/>
                                     <button class="btn btn-danger btn-sm mb-1">Törlés</button>
                                 </form>
-                                <form th:if="${file.uploader.id} != ${user.id}" th:action="@{'/cart/add/' + ${file.id}}"
-                                      method="post">
-                                    <button class="btn btn-success btn-sm mb-1">Kosárba rakom</button>
+                                <form th:if="${file.uploader.id} != ${user.id}"
+                                      th:action="@{'/cart/add/' + ${file.id}}" method="post">
+                                    <button class="btn btn-success btn-sm mb-1"
+                                            th:disabled="${purchases.contains(file)}">Kosárba rakom</button>
                                 </form>
                             </div>
                         </div>
@@ -104,7 +105,7 @@
         </div>
     </div>
 </main>
-<div th:replace="index :: #footer"></div>
+<div th:replace="~{index :: #footer}"></div>
 
 </body>
 </html>

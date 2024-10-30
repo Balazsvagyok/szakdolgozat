@@ -4,10 +4,7 @@ import com.example.szakdolgozat.model.Cart;
 import com.example.szakdolgozat.model.CartItem;
 import com.example.szakdolgozat.model.File;
 import com.example.szakdolgozat.model.User;
-import com.example.szakdolgozat.repository.CartItemRepository;
-import com.example.szakdolgozat.repository.CartRepository;
-import com.example.szakdolgozat.repository.FileRepository;
-import com.example.szakdolgozat.repository.UserRepository;
+import com.example.szakdolgozat.repository.*;
 import com.example.szakdolgozat.service.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -33,6 +30,8 @@ public class CartController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     private User getLoggedInUser(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
@@ -70,6 +69,15 @@ public class CartController {
             cart = new Cart();
             cart.setUser(user);
             cartRepository.save(cart);
+        }
+
+        boolean itemAlreadyInCartOrPurchased = cart.getItems().stream()
+                .anyMatch(item -> item.getFile().getId().equals(file.getId())) ||
+                purchaseRepository.existsByUserAndFile(user, file);
+
+        if (itemAlreadyInCartOrPurchased) {
+            redirectAttributes.addFlashAttribute("message", "A termék már a kosárban van, vagy már megvásároltad!");
+            return "redirect:/files";
         }
 
         CartItem cartItem = new CartItem();

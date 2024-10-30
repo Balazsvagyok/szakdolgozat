@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @Controller
@@ -103,11 +104,13 @@ public class FileController {
         String role = getUserRole(authentication);
 
         List<ResponseFile> files = getResponseFiles();
+        List<ResponseFile> purchasedFiles = getPurchasedFiles(loggedInUser);
 
         model.addAttribute("user", loggedInUser);
         model.addAttribute("files", files);
         model.addAttribute("role", role);
         model.addAttribute("id", loggedInUser.getId());
+        model.addAttribute("purchases", purchasedFiles);
         return "files";
     }
 
