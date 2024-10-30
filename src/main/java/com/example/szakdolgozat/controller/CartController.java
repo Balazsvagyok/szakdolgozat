@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/cart")
@@ -53,11 +54,12 @@ public class CartController {
         model.addAttribute("cart", cart);
         model.addAttribute("user", user);
         model.addAttribute("role", user.getRole());
+        model.addAttribute("id", user.getId());
         return "cart";
     }
 
     @PostMapping("/add/{fileId}")
-    public String addToCart(@PathVariable Long fileId) {
+    public String addToCart(@PathVariable Long fileId, RedirectAttributes redirectAttributes) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = getLoggedInUser(authentication);
@@ -77,7 +79,8 @@ public class CartController {
         cartItem.setPrice(file.getPrice());
         cartItemRepository.save(cartItem);
 
-        return "redirect:/cart";
+        redirectAttributes.addFlashAttribute("message", "A terméket hozzáadta a kosárhoz!");
+        return "redirect:/files";
     }
 
     @PostMapping("/remove/{itemId}")

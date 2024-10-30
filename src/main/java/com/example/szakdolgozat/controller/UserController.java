@@ -162,10 +162,9 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
         model.addAttribute("id", loggedInUser.getId());
-        model.addAttribute("loggedInUserRole", loggedInUser.getRole());
         model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("user", user);
-        model.addAttribute("role", isAdmin() ? user.getRole() : loggedInUser.getRole());
+        model.addAttribute("role", loggedInUser.getRole());
         return "update-user";
     }
 
@@ -177,8 +176,7 @@ public class UserController {
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
-        User loggedInUser = userPrincipal.getUser();
+        User loggedInUser = getLoggedInUser(authentication);
 
         if (loggedInUser.getId().equals(id) || (loggedInUser.getRole().equals("ADMIN"))) {
             User existingUser = userRepository.findByUsername(user.getUsername());
@@ -190,8 +188,9 @@ public class UserController {
                 User userToUpdate = userRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("User not found!"));
 
-                if (loggedInUser.getRole().equals("ADMIN") && loggedInUser.getId().equals(id) && !Objects.equals(loggedInUser.getRole(), user.getRole())) {
+                if (loggedInUser.getId().equals(id) && !loggedInUser.getRole().equals(user.getRole())) {
                     model.addAttribute("role", loggedInUser.getRole());
+                    model.addAttribute("id", loggedInUser.getId());
                     result.rejectValue("role", "error.user", "A saját szereped nem változtatható!");
                     return "update-user";
                 }

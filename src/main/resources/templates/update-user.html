@@ -15,65 +15,69 @@
         crossorigin="anonymous"></script>
 
 <nav th:replace="~{index :: nav}"></nav>
-<div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="container">
-        <h1 class="text-center mt-3">Felhasználó módosítása</h1>
-        <div class="row justify-content-center row-cols-1">
-            <div class="col col-md-6">
-                <form th:action="@{/update/{id}(id=${user.id})}" th:object="${user}" method="post">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Név:</label>
-                        <input type="text" th:field="*{username}" id="username" class="form-control"
-                               placeholder="Felhasználónév">
-                        <span class="text-danger" th:if="${#fields.hasErrors('username')}"
-                              th:errors="*{username}"></span>
-                    </div>
+<main>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="container">
+            <h1 class="text-center mt-3">Felhasználó módosítása</h1>
+            <div class="row justify-content-center row-cols-1">
+                <div class="col col-md-6">
+                    <form th:action="@{/update/{id}(id=${user.id})}" th:object="${user}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Név:</label>
+                            <input type="text" th:field="*{username}" id="username" class="form-control"
+                                   placeholder="Felhasználónév">
+                            <span class="text-danger" th:if="${#fields.hasErrors('username')}"
+                                  th:errors="*{username}"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="text" th:field="*{email}" id="email" class="form-control"
-                               placeholder="Email">
-                        <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="text" th:field="*{email}" id="email" class="form-control"
+                                   placeholder="Email">
+                            <span class="text-danger" th:if="${#fields.hasErrors('email')}"
+                                  th:errors="*{email}"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Szerep:</label>
-                        <select th:field="*{role}" id="role" class="form-select">
-                            <option value="USER">Felhasználó</option>
-                            <option value="ADMIN">Adminisztrátor</option>
-                        </select>
-                        <span class="text-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Szerep:</label>
+                            <select th:field="*{role}" id="role" class="form-select">
+                                <option value="USER">Felhasználó</option>
+                                <option value="ADMIN">Adminisztrátor</option>
+                            </select>
+                            <span class="text-danger" th:if="${#fields.hasErrors('role')}"
+                                  th:errors="*{role}"></span>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Adatok módosítása</button>
-                </form>
+                        <button type="submit" class="btn btn-primary w-100">Adatok módosítása</button>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="row justify-content-center mt-4 row-cols-1">
-            <div class="col col-md-6">
-                <form th:action="@{/update/password/{id}(id=${user.id})}" th:object="${user}" method="post">
-                    <div class="mb-3">
-                        <label for="oldPassword" class="form-label">Jelenlegi jelszó:</label>
-                        <input type="password" th:field="*{password}" id="oldPassword" class="form-control"
-                               placeholder="Old password">
-                        <span class="text-danger" th:if="${#fields.hasErrors('password')}"
-                              th:errors="*{password}"></span>
-                    </div>
+            <div class="row justify-content-center mt-4 row-cols-1">
+                <div class="col col-md-6">
+                    <form th:action="@{/update/password/{id}(id=${user.id})}" th:object="${user}" method="post">
+                        <div class="mb-3">
+                            <label for="oldPassword" class="form-label">Jelenlegi jelszó:</label>
+                            <input type="password" th:field="*{password}" id="oldPassword" class="form-control"
+                                   placeholder="Old password">
+                            <span class="text-danger" th:if="${#fields.hasErrors('password')}"
+                                  th:errors="*{password}"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">Új jelszó:</label>
-                        <input type="password" th:field="*{newPassword}" id="newPassword" class="form-control"
-                               placeholder="New password">
-                        <span class="text-danger" th:if="${#fields.hasErrors('newPassword')}"
-                              th:errors="*{newPassword}"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Új jelszó:</label>
+                            <input type="password" th:field="*{newPassword}" id="newPassword" class="form-control"
+                                   placeholder="New password">
+                            <span class="text-danger" th:if="${#fields.hasErrors('newPassword')}"
+                                  th:errors="*{newPassword}"></span>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Jelszó módosítása</button>
-                </form>
+                        <button type="submit" class="btn btn-primary w-100">Jelszó módosítása</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 <div th:replace="~{index :: #footer}"></div>
 
 </body>
