@@ -87,7 +87,7 @@ public class CartController {
         cartItem.setPrice(file.getPrice());
         cartItemRepository.save(cartItem);
 
-        redirectAttributes.addFlashAttribute("message", "A terméket hozzáadta a kosárhoz!");
+        redirectAttributes.addFlashAttribute("message", "A terméket hozzáadtad a kosárhoz!");
         return "redirect:/files";
     }
 

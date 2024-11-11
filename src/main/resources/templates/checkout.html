@@ -37,7 +37,7 @@
         </table>
         <h3>Összesen: <span th:text="${total + ' Ft'}"></span></h3>
 
-        <h2 class="mt-4">Szállítási adatok megadása</h2>
+        <h2 class="mt-4">Fizetési adatok megadása</h2>
         <form th:action="@{/checkout/submit}" method="post">
             <div class="row">
                 <div class="col">
@@ -63,12 +63,12 @@
                 </div>
                 <div class="col">
                     <div class="mb-3">
-                        <label for="creditCardNumber" class="form-label">Hitelkártya Szám:</label>
-                        <input type="number" id="creditCardNumber" name="creditCardNumber" required class="form-control" pattern="\d{16}" maxlength="16" placeholder="1234567890123456">
+                        <label for="creditCardNumber" class="form-label">Bankkártya szám:</label>
+                        <input type="number" id="creditCardNumber" name="creditCardNumber" required class="form-control" pattern="\d{16}" maxlength="16" placeholder="00000000-00000000">
                     </div>
 
                     <div class="mb-3">
-                        <label for="expiryDate" class="form-label">Lejárati Dátum:</label>
+                        <label for="expiryDate" class="form-label">Lejárati dátum:</label>
                         <input type="text" id="expiryDate" name="expiryDate" required class="form-control" pattern="\d{2}\d{2}" placeholder="MM/YY">
                     </div>
 
